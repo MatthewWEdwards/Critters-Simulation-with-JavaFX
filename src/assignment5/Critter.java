@@ -1,9 +1,29 @@
 package assignment5;
 
 import java.util.*;
+
+
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+
 import java.lang.*;
 
+
 public abstract class Critter {
+	private static int miniWidth = 500;
+	private static int miniHeight = 500;
 	/* NEW FOR PROJECT 5 */
 	public enum CritterShape {
 		CIRCLE,
@@ -253,7 +273,7 @@ public abstract class Critter {
 		public static void makeCritter(String critter_class_name) throws InvalidCritterException{
 			
 			try {
-				Class<?> critter = Class.forName("assignment4." + critter_class_name);
+				Class<?> critter = Class.forName("assignment5." + critter_class_name);
 				Critter newCrit = (Critter) critter.newInstance();
 				population.add(newCrit);
 				newCrit.x_coord = Critter.getRandomInt(Params.world_width);
@@ -452,35 +472,54 @@ public abstract class Critter {
 		 * Prints a 2D grid simulation of the world
 		 */
 		public static void displayWorld() {
-			System.out.print("+");
-			for(int printDash = 0; printDash<Params.world_width; printDash++){
-				System.out.print("-");
-			}
-			System.out.println("+");
+			Canvas miniMap = new Canvas(miniWidth, miniHeight);
+			GraphicsContext miniMapGraphics = miniMap.getGraphicsContext2D();
+			int [] resolution = initializeMiniMap();
+			updateMiniMap(resolution, miniMap, miniMapGraphics);
 			
-			for(int printCols = 0; printCols < Params.world_height; printCols++){
-				System.out.print("|");
-				rowLoop:
-				for(int printRows = 0; printRows < Params.world_width; printRows++){
-					for(int checkCrittersIndex = 0; checkCrittersIndex < population.size(); checkCrittersIndex++){
-						if(population.get(checkCrittersIndex).x_coord == printCols && population.get(checkCrittersIndex).y_coord == printRows){
-							System.out.print(population.get(checkCrittersIndex).toString());
-							continue rowLoop;
+			Canvas display = new Canvas(1000, 1000);
+			GraphicsContext display_graphics = display.getGraphicsContext2D();
+			Main.root.getChildren().add(display);
+			display.relocate(100, 0 );
+			display_graphics.setFill(Color.WHITE);
+			display_graphics.fillRect(0, 200, 200, 200);
+			display_graphics.fill();
+
+		}
+		/**
+		 * This function returns the resolution of the miniMap (which functions as a heatmap)
+		 * @return returns the width in int[0] and the height in int[1]
+		 */
+		private static int[] initializeMiniMap(){
+			int [] resolution = new int[2];
+			resolution[0] = miniWidth < Params.world_width ? Params.world_width/miniWidth : 1;
+			resolution[1] = miniHeight < Params.world_height ? Params.world_height/miniHeight : 1;
+			return resolution;
+		}
+		
+		
+		private static void updateMiniMap(int[] resolution, Canvas miniMap, GraphicsContext miniMapGraphics){
+			int[][] colorArray = new int[miniWidth][miniHeight];
+			Color[][] heatMap = new Color[miniWidth][miniHeight];
+			int dim = resolution[0] * resolution[1];
+			int magnitude = 255/dim;
+			
+			Main.root.getChildren().add(miniMap);
+			miniMap.relocate(0, 400);
+			for(int i = 0; i < miniWidth; i++){
+				for(int j = 0; j < miniHeight; j++){
+					for(int k = i; k < i + resolution[0] && k < Params.world_width ; k++){
+						for(int l = j; l < j + resolution[1] && l < Params.world_height; l++){
+							if(worldArray[k][l] > 0){
+								colorArray[i][j]++;
+							}
 						}
 					}
-					System.out.print(" ");
+					miniMapGraphics.setFill(Color.rgb(255,255 - magnitude*colorArray[i][j],255 - magnitude*colorArray[i][j])); 
+					miniMapGraphics.fillRect(i, j, resolution[0], resolution[1]);
 				}
-				System.out.println("|");
 			}
-			
-			System.out.print("+");
-			for(int printDash = 0; printDash<Params.world_width; printDash++){
-				System.out.print("-");
-			}
-			System.out.println("+");
-			
-			
-			
+
 		}
 		/**
 		 *  Resolves conflicts between critters located in the same space in the world, only at most one critter can remain, 
