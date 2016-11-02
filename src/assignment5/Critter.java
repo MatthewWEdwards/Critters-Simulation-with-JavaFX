@@ -25,8 +25,8 @@ import java.lang.*;
 
 
 public abstract class Critter {
-	private static int critterWidth = 8;									//Represents the size of the critter shape
-	private static int critterHeight = 8;									//Represents the size of the critter shape
+	private static int critterWidth = 12;									//Represents the size of the critter shape
+	private static int critterHeight = 24;									//Represents the size of the critter shape
 	private static int miniWidth = 250;										//Represents the size of the heat map
 	private static int miniHeight = 500;									//Represents the size of the heat map
 	private static int displayWidthDim = critterWidth*Params.world_width;   //Represents the size of the display data
@@ -550,6 +550,12 @@ public abstract class Critter {
 				case DIAMOND:
 					break;
 				case TRIANGLE:
+					displayGraphics.setFill(e.viewOutlineColor());
+					displayGraphics.setLineWidth(1);
+					displayGraphics.strokeLine(e.x_coord*critterWidth, (e.y_coord*critterHeight)+critterHeight-1, e.x_coord*critterWidth+(critterWidth/2)-1, e.y_coord*critterHeight);
+					displayGraphics.strokeLine(e.x_coord*critterWidth+(critterWidth/2)-1, e.y_coord*critterHeight, e.x_coord*critterWidth+critterWidth - 1, e.y_coord*critterHeight+critterHeight-1);
+					displayGraphics.strokeLine(e.x_coord*critterWidth+critterWidth - 1, e.y_coord*critterHeight+critterHeight-1, e.x_coord*critterWidth, e.y_coord*critterHeight+critterHeight-1);
+					//TODO: figure out how to fill this
 					break;
 				case CIRCLE:
 					break;
