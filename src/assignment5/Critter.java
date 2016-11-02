@@ -482,19 +482,21 @@ public abstract class Critter {
 		}
 
 		/**
-		 * Prints a 2D grid simulation of the world
+		 * Displays a 2D grid simulation of the world
 		 */
 		public static void displayWorld() {
 			Canvas miniMap = new Canvas(miniWidth, miniHeight);
 			GraphicsContext miniMapGraphics = miniMap.getGraphicsContext2D();
 			int [] resolution = initializeMiniMap();
-			updateMiniMap(resolution, miniMap, miniMapGraphics);
+			Main.root.getChildren().add(miniMap);
+			miniMap.relocate(0, 400);
+			updateMiniMap(resolution, miniMapGraphics);
 			
 			Canvas display = new Canvas(displayWidthDim, displayHeightDim);
 			GraphicsContext displayGraphics = display.getGraphicsContext2D();
 			displayGraphics.setFill(Color.WHITE);
 			displayGraphics.fillRect(0, 0, displayWidthDim-1, displayHeightDim-1);
-			updateDisplay(display, displayGraphics);
+			updateDisplay(displayGraphics);
 			
 			ScrollPane world = new ScrollPane();
 			world.relocate(canvasXPos, canvasYPos);
@@ -515,13 +517,17 @@ public abstract class Critter {
 		}
 		
 		
-		private static void updateMiniMap(int[] resolution, Canvas miniMap, GraphicsContext miniMapGraphics){
+		/**
+		 * This method updates the heat map of the world
+		 * 
+		 * @param resolution: The graphical size of each partition of the heat map
+		 * @param miniMapGraphics: The graphical content of the heat map canvas
+		 */
+		private static void updateMiniMap(int[] resolution, GraphicsContext miniMapGraphics){
 			int numCrittersInSquare = 0;
 			int dim = resolution[0] * resolution[1];
 			int magnitude = 255/dim;
 			
-			Main.root.getChildren().add(miniMap);
-			miniMap.relocate(0, 400);
 			for(int i = 0; i < miniWidth; i++){
 				for(int j = 0; j < miniHeight; j++){
 					for(int k = i; k < i + resolution[0] && k < Params.world_width ; k++){
@@ -538,7 +544,11 @@ public abstract class Critter {
 			}
 		}
 
-		private static void updateDisplay(Canvas display, GraphicsContext displayGraphics){
+		/**
+		 * This method updates the display canvas with critter information
+		 * @param displayGraphics: The graphics context of the display to be updated
+		 */
+		private static void updateDisplay(GraphicsContext displayGraphics){
 			for(Critter e: population){
 				switch (e.viewShape()){
 				case SQUARE:
