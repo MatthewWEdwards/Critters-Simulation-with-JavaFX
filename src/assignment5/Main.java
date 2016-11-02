@@ -34,28 +34,47 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
         
-		Button btn = new Button();
-		root.getChildren().add(btn);
-		btn.setText("Display World");
+		int btnHeight = 30;
+		int btnWidth = 150;
 		
-
-	
+		
 		for(int i = 0; i < 20000; i++){
 			Critter.makeCritter("Craig");
 		}
 		
-		btn.setOnAction(new EventHandler<ActionEvent>() {
-			
-
-            
-        	@Override
-            public void handle(ActionEvent event) {
-        		Critter.displayWorld();
-        //    		display_graphics.setFill(Color.GREEN);
-        //		display_graphics.fillRect(200, 200, 200, 200);
-
-            }
+		Button displayBtn = new Button();
+		displayBtn.relocate(50, 300);
+		displayBtn.setMinSize(btnWidth, btnHeight);
+		root.getChildren().add(displayBtn);
+		displayBtn.setText("Display World");
+		displayBtn.setOnAction(new EventHandler<ActionEvent>() {
+	    	@Override
+	        public void handle(ActionEvent event) {
+	    		Critter.displayWorld();
+	        }
 		});    
+		
+		
+		
+		
+		Button makeCritterBtn = new Button();
+		makeCritterBtn.relocate(50, 200);
+		makeCritterBtn.setMinSize(btnWidth, btnHeight);
+		root.getChildren().add(makeCritterBtn);
+		makeCritterBtn.setText("Make Critter");			
+		makeCritterBtn.setOnAction(new EventHandler<ActionEvent>() {
+	    	@Override
+	        public void handle(ActionEvent event) {
+	    		Critter.displayWorld();
+	        }
+		});    
+
+		
+
+	
+		
+		
+
 		
 		primaryStage.setScene(new Scene(root, 300, 250));
 		primaryStage.show();

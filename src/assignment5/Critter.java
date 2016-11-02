@@ -570,16 +570,15 @@ public abstract class Critter {
 			for(Critter e: population){
 				int cornerX = e.x_coord*(critterWidth+bufferSpace) + bufferSpace;
 				int cornerY = (e.y_coord)*(critterHeight+bufferSpace)+ bufferSpace;
+				displayGraphics.setFill(e.viewOutlineColor());
+				displayGraphics.setLineWidth(2);
 				switch (e.viewShape()){
 				case SQUARE:
-					displayGraphics.setFill(e.viewOutlineColor());
 					displayGraphics.fillRect(cornerX, cornerY, critterWidth, critterHeight);
 					displayGraphics.setFill(e.viewFillColor());
 					displayGraphics.fillRect(cornerX + 1, cornerY + 1, critterWidth-2, critterHeight-2);
 					break;
 				case DIAMOND:
-					displayGraphics.setFill(e.viewOutlineColor());
-					displayGraphics.setLineWidth(2);
 					displayGraphics.strokeLine(cornerX, cornerY + critterHeight/2, cornerX + critterWidth/2, cornerY);
 					displayGraphics.strokeLine(cornerX, cornerY + critterHeight/2, cornerX + critterWidth/2, cornerY + critterHeight);
 					displayGraphics.strokeLine(cornerX + critterWidth/2, cornerY, cornerX + critterWidth, cornerY + critterHeight/2);
@@ -595,28 +594,49 @@ public abstract class Critter {
 					displayGraphics.fill();
 					break;
 				case TRIANGLE:
-					displayGraphics.setFill(e.viewOutlineColor());
-					displayGraphics.setLineWidth(2);
-					displayGraphics.strokeLine(cornerX, cornerY+critterHeight-1, cornerX+(critterWidth/2)-1, cornerY);
-					displayGraphics.strokeLine(cornerX+(critterWidth/2)-1, cornerY, cornerX+critterWidth - 1, cornerY+critterHeight-1);
-					displayGraphics.strokeLine(cornerX+critterWidth - 1, cornerY+critterHeight-1, cornerX, cornerY+critterHeight-1);
+					displayGraphics.strokeLine(cornerX, cornerY+critterHeight, cornerX+(critterWidth/2), cornerY);
+					displayGraphics.strokeLine(cornerX+(critterWidth/2), cornerY, cornerX+critterWidth, cornerY+critterHeight);
+					displayGraphics.strokeLine(cornerX+critterWidth, cornerY+critterHeight, cornerX, cornerY+critterHeight);
 					displayGraphics.beginPath();
-					displayGraphics.moveTo(cornerX, cornerY+critterHeight-1);
-					displayGraphics.lineTo(cornerX+(critterWidth/2)-1, cornerY);
-					displayGraphics.lineTo(cornerX+critterWidth - 1, cornerY+critterHeight-1);
-					displayGraphics.lineTo(cornerX, cornerY+critterHeight-1);
+					displayGraphics.moveTo(cornerX, cornerY+critterHeight);
+					displayGraphics.lineTo(cornerX+(critterWidth/2), cornerY);
+					displayGraphics.lineTo(cornerX+critterWidth, cornerY+critterHeight);
+					displayGraphics.lineTo(cornerX, cornerY+critterHeight);
 					displayGraphics.closePath();
 					displayGraphics.setFill(e.viewFillColor());
 					displayGraphics.fill();
 					break;
 				case CIRCLE:
-					displayGraphics.setFill(e.viewOutlineColor());
-					displayGraphics.setLineWidth(2);
 					displayGraphics.strokeArc(cornerX, cornerY, critterWidth, critterHeight, 0, 360, ArcType.ROUND);
 					displayGraphics.setFill(e.viewFillColor());
 					displayGraphics.fillArc(cornerX, cornerY, critterWidth, critterHeight, 0, 360, ArcType.ROUND);
 					break;
 				case STAR:
+					displayGraphics.strokeLine(cornerX+(critterWidth/2), cornerY, cornerX+(3*critterWidth/5), cornerY + (2*critterHeight/5));
+					displayGraphics.strokeLine(cornerX+(3*critterWidth/5), cornerY + (2*critterHeight/5), cornerX+critterWidth, cornerY + (2*critterHeight/5));
+					displayGraphics.strokeLine(cornerX+critterWidth, cornerY + (2*critterHeight/5),cornerX+(7*critterWidth/10), cornerY + (3*critterHeight/5));
+					displayGraphics.strokeLine(cornerX+(7*critterWidth/10), cornerY + (3*critterHeight/5) ,cornerX+(4*critterWidth/5), cornerY + critterHeight);
+					displayGraphics.strokeLine(cornerX+(4*critterWidth/5), cornerY + critterWidth ,cornerX+critterWidth/2, cornerY + (4*critterWidth/5));
+					displayGraphics.strokeLine(cornerX+critterWidth/2, cornerY + (4*critterWidth/5),cornerX+(critterWidth/5), cornerY + critterWidth);
+					displayGraphics.strokeLine(cornerX+(critterWidth/5), cornerY + critterWidth, cornerX+(3*critterWidth/10), cornerY + (3*critterHeight/5));
+					displayGraphics.strokeLine(cornerX+(3*critterWidth/10), cornerY + (3*critterHeight/5), cornerX, cornerY + (2*critterHeight/5));
+					displayGraphics.strokeLine(cornerX, cornerY + (2*critterHeight/5),  cornerX+(2*critterWidth/5), cornerY + (2*critterHeight/5));
+					displayGraphics.strokeLine(cornerX+(2*critterWidth/5), cornerY + (2*critterHeight/5), cornerX+(critterWidth/2), cornerY);
+					displayGraphics.beginPath();
+					displayGraphics.moveTo(cornerX+(critterWidth/2), cornerY);
+					displayGraphics.lineTo(cornerX+(3*critterWidth/5), cornerY + (2*critterHeight/5));
+					displayGraphics.lineTo(cornerX+critterWidth, cornerY + (2*critterHeight/5));
+					displayGraphics.lineTo(cornerX+(7*critterWidth/10), cornerY + (3*critterHeight/5));
+					displayGraphics.lineTo(cornerX+(4*critterWidth/5), cornerY + critterHeight);
+					displayGraphics.lineTo(cornerX+critterWidth/2, cornerY + (4*critterWidth/5));
+					displayGraphics.lineTo(cornerX+(critterWidth/5), cornerY + critterWidth);
+					displayGraphics.lineTo(cornerX+(3*critterWidth/10), cornerY + (3*critterHeight/5));
+					displayGraphics.lineTo( cornerX, cornerY + (2*critterHeight/5));
+					displayGraphics.lineTo(cornerX+(2*critterWidth/5), cornerY + (2*critterHeight/5));
+					displayGraphics.lineTo(cornerX+(critterWidth/2), cornerY);
+					displayGraphics.closePath();
+					displayGraphics.setFill(e.viewFillColor());
+					displayGraphics.fill();
 					break;
 				default:
 					break;
