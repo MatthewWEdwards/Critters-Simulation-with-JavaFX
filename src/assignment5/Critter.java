@@ -19,22 +19,24 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.ArcType;
 import javafx.stage.Stage;
 
 import java.lang.*;
 
 
 public abstract class Critter {
-	private static int critterWidth = 12;									//Represents the size of the critter shape
-	private static int critterHeight = 24;									//Represents the size of the critter shape
-	private static int miniWidth = 250;										//Represents the size of the heat map
-	private static int miniHeight = 500;									//Represents the size of the heat map
-	private static int displayWidthDim = critterWidth*Params.world_width;   //Represents the size of the display data
-	private static int displayHeightDim = critterHeight*Params.world_height;//Represents the size of the display data
-	private static int canvasHeight = 800;									//Represents the size of the canvas display
-	private static int canvasWidth = 800;									//Represents the size of the canvas display
-	private static int canvasXPos = 450;									//Represents the position of the canvas display
-	private static int canvasYPos = 100;									//Represents the position of the canvas display
+	private static int critterWidth = 64;											//Represents the size of the critter shape (must be a multiple of 8)
+	private static int critterHeight = 64;											//Represents the size of the critter shape (must be a multiple of 8)
+	private static int miniWidth = 250;												//Represents the size of the heat map
+	private static int miniHeight = 500;											//Represents the size of the heat map
+	private static int displayWidthDim = (critterWidth+8)*Params.world_width + 8;   //Represents the size of the display data
+	private static int displayHeightDim = (critterHeight+8)*Params.world_height + 8;//Represents the size of the display data
+	private static int canvasHeight = 800;											//Represents the size of the canvas display
+	private static int canvasWidth = 800;											//Represents the size of the canvas display
+	private static int canvasXPos = 450;											//Represents the position of the canvas display
+	private static int canvasYPos = 100;											//Represents the position of the canvas display
+	private static int bufferSpace = 8;												//Space between critter drawings
 	
 	
 	/* NEW FOR PROJECT 5 */
@@ -549,25 +551,70 @@ public abstract class Critter {
 		 * @param displayGraphics: The graphics context of the display to be updated
 		 */
 		private static void updateDisplay(GraphicsContext displayGraphics){
+			
+			int partitionWidthX = critterWidth/2 - 4;
+			int partitionWidthY = critterHeight/2 - 4;
+
+			
+			for(int i = 0; i <= Params.world_width*2; i += 2){
+				displayGraphics.setFill(Color.BLACK);
+				displayGraphics.strokeLine(i*(Critter.critterWidth-partitionWidthX) + 4, 4, i*(Critter.critterWidth-partitionWidthX) + 4, Critter.displayHeightDim - 4);
+			}
+			
+			for(int i = 0; i <= Params.world_width*2; i += 2){
+				displayGraphics.setFill(Color.BLACK);
+				displayGraphics.strokeLine(4, i*(Critter.critterHeight-partitionWidthY) + 4, Critter.displayWidthDim - 4, i*(Critter.critterHeight-partitionWidthY) + 4);
+			}
+			
+
 			for(Critter e: population){
+				int cornerX = e.x_coord*(critterWidth+bufferSpace) + bufferSpace;
+				int cornerY = (e.y_coord)*(critterHeight+bufferSpace)+ bufferSpace;
 				switch (e.viewShape()){
 				case SQUARE:
 					displayGraphics.setFill(e.viewOutlineColor());
-					displayGraphics.fillRect(e.x_coord*critterWidth, e.y_coord*critterHeight, critterWidth, critterHeight);
+					displayGraphics.fillRect(cornerX, cornerY, critterWidth, critterHeight);
 					displayGraphics.setFill(e.viewFillColor());
-					displayGraphics.fillRect(e.x_coord*critterWidth+1, e.y_coord*critterHeight+1, critterWidth-2, critterHeight-2);
+					displayGraphics.fillRect(cornerX + 1, cornerY + 1, critterWidth-2, critterHeight-2);
 					break;
 				case DIAMOND:
+					displayGraphics.setFill(e.viewOutlineColor());
+					displayGraphics.setLineWidth(2);
+					displayGraphics.strokeLine(cornerX, cornerY + critterHeight/2, cornerX + critterWidth/2, cornerY);
+					displayGraphics.strokeLine(cornerX, cornerY + critterHeight/2, cornerX + critterWidth/2, cornerY + critterHeight);
+					displayGraphics.strokeLine(cornerX + critterWidth/2, cornerY, cornerX + critterWidth, cornerY + critterHeight/2);
+					displayGraphics.strokeLine(cornerX + critterWidth/2, cornerY + critterHeight, cornerX + critterWidth, cornerY + critterHeight/2);
+					displayGraphics.beginPath();
+					displayGraphics.moveTo(cornerX, cornerY + critterHeight/2);
+					displayGraphics.lineTo(cornerX + critterWidth/2, cornerY);
+					displayGraphics.lineTo(cornerX + critterWidth, cornerY + critterHeight/2);
+					displayGraphics.lineTo(cornerX + critterWidth/2, cornerY + critterHeight);
+					displayGraphics.lineTo(cornerX, cornerY + critterHeight/2);
+					displayGraphics.closePath();
+					displayGraphics.setFill(e.viewFillColor());
+					displayGraphics.fill();
 					break;
 				case TRIANGLE:
 					displayGraphics.setFill(e.viewOutlineColor());
-					displayGraphics.setLineWidth(1);
-					displayGraphics.strokeLine(e.x_coord*critterWidth, (e.y_coord*critterHeight)+critterHeight-1, e.x_coord*critterWidth+(critterWidth/2)-1, e.y_coord*critterHeight);
-					displayGraphics.strokeLine(e.x_coord*critterWidth+(critterWidth/2)-1, e.y_coord*critterHeight, e.x_coord*critterWidth+critterWidth - 1, e.y_coord*critterHeight+critterHeight-1);
-					displayGraphics.strokeLine(e.x_coord*critterWidth+critterWidth - 1, e.y_coord*critterHeight+critterHeight-1, e.x_coord*critterWidth, e.y_coord*critterHeight+critterHeight-1);
-					//TODO: figure out how to fill this
+					displayGraphics.setLineWidth(2);
+					displayGraphics.strokeLine(cornerX, cornerY+critterHeight-1, cornerX+(critterWidth/2)-1, cornerY);
+					displayGraphics.strokeLine(cornerX+(critterWidth/2)-1, cornerY, cornerX+critterWidth - 1, cornerY+critterHeight-1);
+					displayGraphics.strokeLine(cornerX+critterWidth - 1, cornerY+critterHeight-1, cornerX, cornerY+critterHeight-1);
+					displayGraphics.beginPath();
+					displayGraphics.moveTo(cornerX, cornerY+critterHeight-1);
+					displayGraphics.lineTo(cornerX+(critterWidth/2)-1, cornerY);
+					displayGraphics.lineTo(cornerX+critterWidth - 1, cornerY+critterHeight-1);
+					displayGraphics.lineTo(cornerX, cornerY+critterHeight-1);
+					displayGraphics.closePath();
+					displayGraphics.setFill(e.viewFillColor());
+					displayGraphics.fill();
 					break;
 				case CIRCLE:
+					displayGraphics.setFill(e.viewOutlineColor());
+					displayGraphics.setLineWidth(2);
+					displayGraphics.strokeArc(cornerX, cornerY, critterWidth, critterHeight, 0, 360, ArcType.ROUND);
+					displayGraphics.setFill(e.viewFillColor());
+					displayGraphics.fillArc(cornerX, cornerY, critterWidth, critterHeight, 0, 360, ArcType.ROUND);
 					break;
 				case STAR:
 					break;

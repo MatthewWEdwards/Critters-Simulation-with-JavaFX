@@ -40,7 +40,7 @@ public class Main extends Application {
 		
 
 	
-		for(int i = 0; i < 90000; i++){
+		for(int i = 0; i < 20000; i++){
 			Critter.makeCritter("Craig");
 		}
 		
