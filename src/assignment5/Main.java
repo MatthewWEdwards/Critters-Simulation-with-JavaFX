@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -17,7 +18,7 @@ import javafx.stage.Stage;
 
 
 public class Main extends Application {
-
+	
 	public static Pane root = new Pane();
 
 
@@ -37,6 +38,7 @@ public class Main extends Application {
 		root.getChildren().add(btn);
 		btn.setText("Display World");
 		
+
 	
 		for(int i = 0; i < 90000; i++){
 			Critter.makeCritter("Craig");

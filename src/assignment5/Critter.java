@@ -6,11 +6,14 @@ import java.util.*;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -22,8 +25,18 @@ import java.lang.*;
 
 
 public abstract class Critter {
-	private static int miniWidth = 500;
-	private static int miniHeight = 500;
+	private static int critterWidth = 8;									//Represents the size of the critter shape
+	private static int critterHeight = 8;									//Represents the size of the critter shape
+	private static int miniWidth = 250;										//Represents the size of the heat map
+	private static int miniHeight = 500;									//Represents the size of the heat map
+	private static int displayWidthDim = critterWidth*Params.world_width;   //Represents the size of the display data
+	private static int displayHeightDim = critterHeight*Params.world_height;//Represents the size of the display data
+	private static int canvasHeight = 800;									//Represents the size of the canvas display
+	private static int canvasWidth = 800;									//Represents the size of the canvas display
+	private static int canvasXPos = 450;									//Represents the position of the canvas display
+	private static int canvasYPos = 100;									//Represents the position of the canvas display
+	
+	
 	/* NEW FOR PROJECT 5 */
 	public enum CritterShape {
 		CIRCLE,
@@ -477,13 +490,17 @@ public abstract class Critter {
 			int [] resolution = initializeMiniMap();
 			updateMiniMap(resolution, miniMap, miniMapGraphics);
 			
-			Canvas display = new Canvas(1000, 1000);
-			GraphicsContext display_graphics = display.getGraphicsContext2D();
-			Main.root.getChildren().add(display);
-			display.relocate(100, 0 );
-			display_graphics.setFill(Color.WHITE);
-			display_graphics.fillRect(0, 200, 200, 200);
-			display_graphics.fill();
+			Canvas display = new Canvas(displayWidthDim, displayHeightDim);
+			GraphicsContext displayGraphics = display.getGraphicsContext2D();
+			displayGraphics.setFill(Color.WHITE);
+			displayGraphics.fillRect(0, 0, displayWidthDim-1, displayHeightDim-1);
+			updateDisplay(display, displayGraphics);
+			
+			ScrollPane world = new ScrollPane();
+			world.relocate(canvasXPos, canvasYPos);
+			world.setPrefSize(canvasWidth, canvasHeight);
+			world.setContent(display);
+			Main.root.getChildren().add(world);
 
 		}
 		/**
@@ -499,8 +516,7 @@ public abstract class Critter {
 		
 		
 		private static void updateMiniMap(int[] resolution, Canvas miniMap, GraphicsContext miniMapGraphics){
-			int[][] colorArray = new int[miniWidth][miniHeight];
-			Color[][] heatMap = new Color[miniWidth][miniHeight];
+			int numCrittersInSquare = 0;
 			int dim = resolution[0] * resolution[1];
 			int magnitude = 255/dim;
 			
@@ -511,16 +527,41 @@ public abstract class Critter {
 					for(int k = i; k < i + resolution[0] && k < Params.world_width ; k++){
 						for(int l = j; l < j + resolution[1] && l < Params.world_height; l++){
 							if(worldArray[k][l] > 0){
-								colorArray[i][j]++;
+								numCrittersInSquare++;
 							}
 						}
 					}
-					miniMapGraphics.setFill(Color.rgb(255,255 - magnitude*colorArray[i][j],255 - magnitude*colorArray[i][j])); 
+					miniMapGraphics.setFill(Color.rgb(255,255 - magnitude*numCrittersInSquare, 255 - magnitude*numCrittersInSquare)); 
 					miniMapGraphics.fillRect(i, j, resolution[0], resolution[1]);
+					numCrittersInSquare = 0;
 				}
 			}
-
 		}
+
+		private static void updateDisplay(Canvas display, GraphicsContext displayGraphics){
+			for(Critter e: population){
+				switch (e.viewShape()){
+				case SQUARE:
+					displayGraphics.setFill(e.viewOutlineColor());
+					displayGraphics.fillRect(e.x_coord*critterWidth, e.y_coord*critterHeight, critterWidth, critterHeight);
+					displayGraphics.setFill(e.viewFillColor());
+					displayGraphics.fillRect(e.x_coord*critterWidth+1, e.y_coord*critterHeight+1, critterWidth-2, critterHeight-2);
+					break;
+				case DIAMOND:
+					break;
+				case TRIANGLE:
+					break;
+				case CIRCLE:
+					break;
+				case STAR:
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		
+		
 		/**
 		 *  Resolves conflicts between critters located in the same space in the world, only at most one critter can remain, 
 		 *  whether because the other one flees or because it fights and gets killed
