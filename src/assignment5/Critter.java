@@ -77,11 +77,81 @@ public abstract class Critter {
 		myPackage = Critter.class.getPackage().toString().split(" ")[1];
 	}
 	
-	protected String look(int direction, boolean steps) {return "";}
+	protected String look(int direction, boolean steps) {
+		this.energy -= Params.look_energy_cost;
+		int lookx = this.x_coord;
+		int looky = this.y_coord;
+		int i = 1;
+		if(steps == true)
+			i++;
+		while(i > 0){
+		
+			switch (direction){
+			case 0: lookx++;
+					if (lookx == Params.world_width)
+						lookx = 0;
+					break;
+			case 1: looky--;
+					lookx++;
+					if (lookx == Params.world_width)
+						lookx = 0;
+					if (looky < 0)
+						looky = Params.world_height - 1;
+					break;
+			case 2: looky--;
+					if (looky < 0)
+						looky = Params.world_height - 1;
+					break;
+			case 3: looky--;
+					lookx--;
+					if (looky < 0)
+						looky = Params.world_height - 1;
+					if (lookx < 0)
+						lookx = Params.world_width - 1;
+					break;
+			case 4: lookx--;
+					if (lookx < 0)
+						lookx = Params.world_width - 1;
+					break;
+			case 5: lookx--;
+					looky++;
+					if (lookx < 0)
+						lookx = Params.world_width - 1;
+					if (looky == Params.world_height)
+						looky = 0;
+					break;
+			case 6: looky++;
+					if (looky == Params.world_height)
+						looky = 0;
+					break;
+			case 7: looky++;
+					lookx--;
+					if (looky == Params.world_height)
+						looky = 0;
+					if(lookx < 0)
+						lookx = Params.world_width -1;
+					break;
+			}
+			i--; //will stop here or go once more if steps = true
+		}
+		
+		if(begWorldArray[lookx][looky] == 0)
+			return ""; //not a critter there
+		else {
+			for(Critter e : population){
+				if((e.x_coord == lookx) && (e.y_coord == looky))
+					return e.toString();
+			}
+			return "";
+		}
+		
+		
+		}
 	
 	/* rest is unchanged from Project 4 */
 	private static List<String> typesOfCritters = new java.util.ArrayList<String>();
 	private static int timeStep = 0;
+	private static int[][] begWorldArray = new int[Params.world_width][Params.world_height]; //need to be instantiated in main?
 	private static int[][] worldArray = new int[Params.world_width][Params.world_height];
 	
 	// Gets the package name.  This assumes that Critter and its subclasses are all in the same package.
@@ -190,7 +260,7 @@ public abstract class Critter {
 				return;
 			int startx = x_coord;
 			int starty = y_coord;
-			worldArray[x_coord][y_coord] -= 1; 
+			worldArray[x_coord][y_coord] -= 1; //two world arrays since look doesn't look at critters that have moved this time step
 			
 			switch (direction){
 				case 0: x_coord+= 2;
@@ -414,6 +484,7 @@ public abstract class Critter {
 		 */
 		public static void clearWorld() {
 			worldArray = new int[Params.world_width][Params.world_height];
+			begWorldArray = new int[Params.world_width][Params.world_height];
 			population.clear();
 		}
 		/** This function calls doTimeStep for all Critters in population, then resolves encounters of all critters located
@@ -421,6 +492,10 @@ public abstract class Critter {
 		 * step to the population array
 		 */ 
 		public static void worldTimeStep() {
+			for (int r : worldArray)  //proper way to iterate through a 2d array?
+				for ( int c : worldArray[r])
+					begWorldArray[r][c] = worldArray[r][c]; //bring begWorldArray up to date
+			
 			timeStep++;
 			for(int i = 0; i < population.size(); i++){ //Time Steps
 				Critter current = population.get(i);
