@@ -11,6 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -20,6 +21,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.Screen;
 
 
 public class Main extends Application {
@@ -37,6 +39,7 @@ public class Main extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+	
 		int btnHeight = 30;
 		int btnWidth = 150;
 		
@@ -53,10 +56,10 @@ public class Main extends Application {
 	        }
 		});    
 		
-		      
+		
 		
 		ObservableList<String> crittersAvailable = FXCollections.observableArrayList();
-		String path = System.getProperty("user.dir") + "\\src\\assignment5";
+		String path = System.getProperty("user.dir") + "\\src\\assignment5"; // on linux /src/assignment5
 		File folder = new File(path);
 		File[] listOfFiles = folder.listFiles();
 
@@ -66,6 +69,8 @@ public class Main extends Application {
 		      if (listOfFiles[i].isFile()){
 		    	className = listOfFiles[i].getName();
 		    	Class<?> testClass = Class.forName("assignment5." + className.substring(0, className.length() - 5));
+		    	//assert(false);
+		    	
 		    	if(Modifier.isAbstract(testClass.getModifiers()) || className.equals("InvalidCritterException.java")){
 		    		continue;
 		    	}
@@ -118,8 +123,8 @@ public class Main extends Application {
 		
 		
 
-		
-		primaryStage.setScene(new Scene(root, 300, 250));
+		Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+		primaryStage.setScene(new Scene(root, primaryScreenBounds.getWidth(), primaryScreenBounds.getHeight()));
 		primaryStage.show();
 	}
 
