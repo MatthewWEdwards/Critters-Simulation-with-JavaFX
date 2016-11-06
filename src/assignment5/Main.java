@@ -1,15 +1,20 @@
 package assignment5;
 
+import java.io.File;
+import java.lang.reflect.Modifier;
+
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollBar;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -20,7 +25,6 @@ import javafx.stage.Stage;
 public class Main extends Application {
 	
 	public static Pane root = new Pane();
-
 
 	public static void main(String[] args) {
 		//Launch controller
@@ -33,14 +37,9 @@ public class Main extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-        
 		int btnHeight = 30;
 		int btnWidth = 150;
 		
-		
-		for(int i = 0; i < 20000; i++){
-			Critter.makeCritter("Craig");
-		}
 		
 		Button displayBtn = new Button();
 		displayBtn.relocate(50, 300);
@@ -54,9 +53,41 @@ public class Main extends Application {
 	        }
 		});    
 		
+		      
 		
-		
-		
+		ObservableList<String> crittersAvailable = FXCollections.observableArrayList();
+		String path = System.getProperty("user.dir") + "\\src\\assignment5";
+		File folder = new File(path);
+		File[] listOfFiles = folder.listFiles();
+
+			String className = new String();
+			//TODO: make this reflection work with all files (headers)
+		    for (int i = 0; i < listOfFiles.length; i++) {
+		      if (listOfFiles[i].isFile()){
+		    	className = listOfFiles[i].getName();
+		    	Class<?> testClass = Class.forName("assignment5." + className.substring(0, className.length() - 5));
+		    	if(Modifier.isAbstract(testClass.getModifiers()) || className.equals("InvalidCritterException.java")){
+		    		continue;
+		    	}
+
+				Object newCrit = testClass.newInstance();
+				if(newCrit instanceof Critter){
+					crittersAvailable.add(listOfFiles[i].getName().substring(0, className.length() - 5));
+				}
+		      }
+		    }
+		    final ComboBox<String> selectCritter = new ComboBox<>(crittersAvailable);
+		    selectCritter.setEditable(true);
+			selectCritter.relocate(0, 250);
+			root.getChildren().add(selectCritter);
+			selectCritter.setValue("Craig");
+			
+			TextField numCritters = new TextField();
+			root.getChildren().add(numCritters);
+			numCritters.relocate(0, 100);
+			
+
+			
 		Button makeCritterBtn = new Button();
 		makeCritterBtn.relocate(50, 200);
 		makeCritterBtn.setMinSize(btnWidth, btnHeight);
@@ -65,7 +96,19 @@ public class Main extends Application {
 		makeCritterBtn.setOnAction(new EventHandler<ActionEvent>() {
 	    	@Override
 	        public void handle(ActionEvent event) {
-	    		Critter.displayWorld();
+	    		try {
+	    			int numToCreate;
+	    			String textBox = numCritters.getText();
+	    			if(!checkIfInt(textBox.trim(), 0)){
+	    				return;
+	    			}else{
+	    				numToCreate = Integer.parseInt(textBox.trim());
+	    			}
+	    			for(int i = 0; i < numToCreate; i++)
+	    				Critter.makeCritter(selectCritter.getValue());
+	    			Critter.displayWorld();
+				} catch (InvalidCritterException e) {
+				}
 	        }
 		});    
 
@@ -81,6 +124,20 @@ public class Main extends Application {
 	}
 
 
-
+	public static boolean checkIfInt(String input, int index){
+		if(index >= input.length()){
+			return false;
+		}
+		charLoop:
+			for(int i = index; i < input.length(); i++){
+				for(char k = '0'; k <= '9'; k++){
+	        		if(input.charAt(i) == k){
+	        			continue charLoop;
+	        		}     	
+				}
+				return false;
+			}
+			return true;
+	}
     
 }

@@ -9,12 +9,16 @@ import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -37,7 +41,13 @@ public abstract class Critter {
 	private static int canvasXPos = 450;											//Represents the position of the canvas display
 	private static int canvasYPos = 100;											//Represents the position of the canvas display
 	private static int bufferSpace = 8;												//Space between critter drawings
-	
+	private static ScrollPane world = null;											//ScrollPane created by displayWorld()
+	private static Canvas miniMap = null;											//minimap canvas created by displayWorld()
+	private static GraphicsContext miniMapGraphics = null;
+	private static Canvas display = null;												//main map canvas created by displayWorld()
+	private static GraphicsContext displayGraphics = null;
+	private static boolean worldFlag = true;										//Checks if proper nodes are created by displayWorld
+	private static String prevDisplay[][] = new String [Params.world_width][Params.world_height];
 	
 	/* NEW FOR PROJECT 5 */
 	public enum CritterShape {
@@ -492,9 +502,9 @@ public abstract class Critter {
 		 * step to the population array
 		 */ 
 		public static void worldTimeStep() {
-			for (int r : worldArray)  //proper way to iterate through a 2d array?
-				for ( int c : worldArray[r])
-					begWorldArray[r][c] = worldArray[r][c]; //bring begWorldArray up to date
+		//	for (int r : worldArray)  //proper way to iterate through a 2d array?
+			//	for ( int c : worldArray[r])
+				//	begWorldArray[r][c] = worldArray[r][c]; //bring begWorldArray up to date
 			
 			timeStep++;
 			for(int i = 0; i < population.size(); i++){ //Time Steps
@@ -561,25 +571,35 @@ public abstract class Critter {
 		/**
 		 * Displays a 2D grid simulation of the world
 		 */
+		//TODO
 		public static void displayWorld() {
-			Canvas miniMap = new Canvas(miniWidth, miniHeight);
-			GraphicsContext miniMapGraphics = miniMap.getGraphicsContext2D();
+			if(worldFlag){
+				Canvas miniMap = new Canvas(miniWidth, miniHeight);
+				miniMapGraphics = miniMap.getGraphicsContext2D();
+				Main.root.getChildren().add(miniMap);
+				miniMap.relocate(0, 400);
+				
+				display = new Canvas(displayWidthDim, displayHeightDim);
+				displayGraphics = display.getGraphicsContext2D();
+				displayGraphics.setFill(Color.WHITE);
+				displayGraphics.fillRect(0, 0, displayWidthDim-1, displayHeightDim-1);
+				
+				world = new ScrollPane();
+				world.setPannable(true);
+				world.relocate(canvasXPos, canvasYPos);
+				world.setPrefSize(canvasWidth, canvasHeight);
+				world.setContent(display);
+				Main.root.getChildren().add(world);
+
+				worldFlag = false;
+			}
+
 			int [] resolution = initializeMiniMap();
-			Main.root.getChildren().add(miniMap);
-			miniMap.relocate(0, 400);
 			updateMiniMap(resolution, miniMapGraphics);
 			
-			Canvas display = new Canvas(displayWidthDim, displayHeightDim);
-			GraphicsContext displayGraphics = display.getGraphicsContext2D();
-			displayGraphics.setFill(Color.WHITE);
-			displayGraphics.fillRect(0, 0, displayWidthDim-1, displayHeightDim-1);
+			
 			updateDisplay(displayGraphics);
 			
-			ScrollPane world = new ScrollPane();
-			world.relocate(canvasXPos, canvasYPos);
-			world.setPrefSize(canvasWidth, canvasHeight);
-			world.setContent(display);
-			Main.root.getChildren().add(world);
 
 		}
 		/**
@@ -626,11 +646,9 @@ public abstract class Critter {
 		 * @param displayGraphics: The graphics context of the display to be updated
 		 */
 		private static void updateDisplay(GraphicsContext displayGraphics){
-			
 			int partitionWidthX = critterWidth/2 - 4;
 			int partitionWidthY = critterHeight/2 - 4;
 
-			
 			for(int i = 0; i <= Params.world_width*2; i += 2){
 				displayGraphics.setFill(Color.BLACK);
 				displayGraphics.strokeLine(i*(Critter.critterWidth-partitionWidthX) + 4, 4, i*(Critter.critterWidth-partitionWidthX) + 4, Critter.displayHeightDim - 4);
@@ -641,10 +659,15 @@ public abstract class Critter {
 				displayGraphics.strokeLine(4, i*(Critter.critterHeight-partitionWidthY) + 4, Critter.displayWidthDim - 4, i*(Critter.critterHeight-partitionWidthY) + 4);
 			}
 			
-
+			int cornerX;
+			int cornerY;
 			for(Critter e: population){
-				int cornerX = e.x_coord*(critterWidth+bufferSpace) + bufferSpace;
-				int cornerY = (e.y_coord)*(critterHeight+bufferSpace)+ bufferSpace;
+				if(e.toString().equals(prevDisplay[e.x_coord][e.y_coord])){
+					continue;
+				}
+				cornerX = e.x_coord*(critterWidth+bufferSpace) + bufferSpace;
+				cornerY = (e.y_coord)*(critterHeight+bufferSpace)+ bufferSpace;
+				displayGraphics.clearRect(cornerX-1, cornerY-1, critterWidth+3, critterHeight+3);
 				displayGraphics.setFill(e.viewOutlineColor());
 				displayGraphics.setLineWidth(2);
 				switch (e.viewShape()){
@@ -715,7 +738,9 @@ public abstract class Critter {
 					break;
 				default:
 					break;
+					
 				}
+				prevDisplay[e.x_coord][e.y_coord] = e.toString();
 			}
 		}
 		
