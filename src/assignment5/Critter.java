@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
@@ -25,21 +26,24 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 import javafx.stage.Stage;
+import javafx.stage.Screen;
 
 import java.lang.*;
 
 
 public abstract class Critter {
-	private static int critterWidth = 64;											//Represents the size of the critter shape (must be a multiple of 8)
-	private static int critterHeight = 64;											//Represents the size of the critter shape (must be a multiple of 8)
-	private static int miniWidth = 250;												//Represents the size of the heat map
-	private static int miniHeight = 500;											//Represents the size of the heat map
+	private static double screenSizeHeight = Screen.getPrimary().getVisualBounds().getHeight();
+	private static double screenSizeWidth = Screen.getPrimary().getVisualBounds().getWidth();
+	private static int critterWidth = 8;	//Represents the size of the critter shape (must be a multiple of 8)
+	private static int critterHeight = 8;//Represents the size of the critter shape (must be a multiple of 8)
+	private static int miniWidth = (int) (.2*screenSizeWidth);												//Represents the size of the heat map
+	private static int miniHeight =(int) (.4*screenSizeHeight);											//Represents the size of the heat map
 	private static int displayWidthDim = (critterWidth+8)*Params.world_width + 8;   //Represents the size of the display data
 	private static int displayHeightDim = (critterHeight+8)*Params.world_height + 8;//Represents the size of the display data
-	private static int canvasHeight = 800;											//Represents the size of the canvas display
-	private static int canvasWidth = 800;											//Represents the size of the canvas display
-	private static int canvasXPos = 450;											//Represents the position of the canvas display
-	private static int canvasYPos = 100;											//Represents the position of the canvas display
+	private static int canvasHeight = (int) (.8*screenSizeHeight);											//Represents the size of the canvas display
+	private static int canvasWidth =  (int) (.6*screenSizeWidth);											//Represents the size of the canvas display
+	private static int canvasXPos = (int) (.3*screenSizeWidth);											//Represents the position of the canvas display
+	private static int canvasYPos = (int) (.075*screenSizeHeight);											//Represents the position of the canvas display
 	private static int bufferSpace = 8;												//Space between critter drawings
 	private static ScrollPane world = null;											//ScrollPane created by displayWorld()
 	private static Canvas miniMap = null;											//minimap canvas created by displayWorld()
