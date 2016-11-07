@@ -116,6 +116,18 @@ public class Main extends Application {
 				}
 	        }
 		});    
+		
+		Button quitBtn = new Button();
+		quitBtn.relocate(50, 350);
+		quitBtn.setMinSize(btnWidth, btnHeight);
+		root.getChildren().add(quitBtn);
+		quitBtn.setText("Quit");			
+		quitBtn.setOnAction(new EventHandler<ActionEvent>() {
+	    	@Override
+	        public void handle(ActionEvent event) {    
+	    		System.exit(1);
+	    	}
+		});
 
 		
 
