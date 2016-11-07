@@ -25,11 +25,13 @@ public abstract class Painter {
 	public static void drawCircle(int cornerX, 
 								  int cornerY, 
 								  int critterWidth, 
-								  int critterHeight, 
+								  int critterHeight,
+				 				  Color o,
 								  Color c,
 								  GraphicsContext displayGraphics){
-		displayGraphics.strokeArc(cornerX, cornerY, critterWidth, critterHeight, 0, 360, ArcType.ROUND);
+		displayGraphics.setStroke(o);
 		displayGraphics.setFill(c);
+		displayGraphics.strokeArc(cornerX, cornerY, critterWidth, critterHeight, 0, 360, ArcType.ROUND);
 		displayGraphics.fillArc(cornerX, cornerY, critterWidth, critterHeight, 0, 360, ArcType.ROUND);
 		
 	}
@@ -37,8 +39,11 @@ public abstract class Painter {
 			 					int cornerY, 
 			 					int critterWidth, 
 			 					int critterHeight, 
+			 					Color o,
 			 					Color c,
 			 					GraphicsContext displayGraphics){
+		displayGraphics.setStroke(o);
+		displayGraphics.setFill(c);
 		displayGraphics.strokeLine(cornerX+(critterWidth/2), cornerY, cornerX+(3*critterWidth/5), cornerY + (2*critterHeight/5));
 		displayGraphics.strokeLine(cornerX+(3*critterWidth/5), cornerY + (2*critterHeight/5), cornerX+critterWidth, cornerY + (2*critterHeight/5));
 		displayGraphics.strokeLine(cornerX+critterWidth, cornerY + (2*critterHeight/5),cornerX+(7*critterWidth/10), cornerY + (3*critterHeight/5));
@@ -62,7 +67,6 @@ public abstract class Painter {
 		displayGraphics.lineTo(cornerX+(2*critterWidth/5), cornerY + (2*critterHeight/5));
 		displayGraphics.lineTo(cornerX+(critterWidth/2), cornerY);
 		displayGraphics.closePath();
-		displayGraphics.setFill(c);
 		displayGraphics.fill();
 	}
 	
@@ -70,8 +74,11 @@ public abstract class Painter {
 								   int cornerY, 
 								   int critterWidth, 
 								   int critterHeight, 
+								   Color o,
 								   Color c,
 								   GraphicsContext displayGraphics){
+		displayGraphics.setStroke(o);
+		displayGraphics.setFill(c);
 		displayGraphics.strokeLine(cornerX, cornerY + critterHeight/2, cornerX + critterWidth/2, cornerY);
 		displayGraphics.strokeLine(cornerX, cornerY + critterHeight/2, cornerX + critterWidth/2, cornerY + critterHeight);
 		displayGraphics.strokeLine(cornerX + critterWidth/2, cornerY, cornerX + critterWidth, cornerY + critterHeight/2);
@@ -83,7 +90,6 @@ public abstract class Painter {
 		displayGraphics.lineTo(cornerX + critterWidth/2, cornerY + critterHeight);
 		displayGraphics.lineTo(cornerX, cornerY + critterHeight/2);
 		displayGraphics.closePath();
-		displayGraphics.setFill(c);
 		displayGraphics.fill();
 	}
 	
@@ -91,8 +97,11 @@ public abstract class Painter {
 									int cornerY, 
 									int critterWidth, 
 									int critterHeight, 
+				 					Color o,
 									Color c,
 									GraphicsContext displayGraphics){
+		displayGraphics.setStroke(o);
+		displayGraphics.setFill(c);
 		displayGraphics.strokeLine(cornerX, cornerY+critterHeight, cornerX+(critterWidth/2), cornerY);
 		displayGraphics.strokeLine(cornerX+(critterWidth/2), cornerY, cornerX+critterWidth, cornerY+critterHeight);
 		displayGraphics.strokeLine(cornerX+critterWidth, cornerY+critterHeight, cornerX, cornerY+critterHeight);
@@ -102,7 +111,6 @@ public abstract class Painter {
 		displayGraphics.lineTo(cornerX+critterWidth, cornerY+critterHeight);
 		displayGraphics.lineTo(cornerX, cornerY+critterHeight);
 		displayGraphics.closePath();
-		displayGraphics.setFill(c);
 		displayGraphics.fill();
 		
 	}
@@ -111,10 +119,17 @@ public abstract class Painter {
 									 int cornerY, 
 									 int critterWidth, 
 									 int critterHeight, 
+									 Color o,
 									 Color c,
 									 GraphicsContext displayGraphics){
-		displayGraphics.fillRect(cornerX, cornerY, critterWidth, critterHeight);
+		displayGraphics.setStroke(o);
 		displayGraphics.setFill(c);
+		displayGraphics.fillRect(cornerX, cornerY, critterWidth, critterHeight);
 		displayGraphics.fillRect(cornerX + 1, cornerY + 1, critterWidth-2, critterHeight-2);
+	}
+	
+	public static void whiteOut(int cornerX, int cornerY, int width, int height, GraphicsContext displayGraphics){
+		displayGraphics.setFill(Color.WHITE);
+		displayGraphics.fillRect(cornerX, cornerY, width, height);
 	}
 }
