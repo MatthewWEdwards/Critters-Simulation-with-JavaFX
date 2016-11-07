@@ -29,6 +29,7 @@ import javafx.stage.Stage;
 import javafx.stage.Screen;
 
 import java.lang.*;
+import java.lang.reflect.Method;
 
 
 public abstract class Critter {
@@ -653,7 +654,9 @@ public abstract class Critter {
 			int partitionWidthX = critterWidth/2 - 4;
 			int partitionWidthY = critterHeight/2 - 4;
 
+			displayGraphics.setLineWidth(2);
 			for(int i = 0; i <= Params.world_width*2; i += 2){
+
 				displayGraphics.setFill(Color.BLACK);
 				displayGraphics.strokeLine(i*(Critter.critterWidth-partitionWidthX) + 4, 4, i*(Critter.critterWidth-partitionWidthX) + 4, Critter.displayHeightDim - 4);
 			}
@@ -674,71 +677,23 @@ public abstract class Critter {
 				displayGraphics.clearRect(cornerX-1, cornerY-1, critterWidth+3, critterHeight+3);
 				displayGraphics.setFill(e.viewOutlineColor());
 				displayGraphics.setLineWidth(2);
+				
+				Color c = e.viewFillColor();
 				switch (e.viewShape()){
 				case SQUARE:
-					displayGraphics.fillRect(cornerX, cornerY, critterWidth, critterHeight);
-					displayGraphics.setFill(e.viewFillColor());
-					displayGraphics.fillRect(cornerX + 1, cornerY + 1, critterWidth-2, critterHeight-2);
+					Painter.drawRectangle(cornerX, cornerY, critterWidth, critterHeight, c, displayGraphics);
 					break;
 				case DIAMOND:
-					displayGraphics.strokeLine(cornerX, cornerY + critterHeight/2, cornerX + critterWidth/2, cornerY);
-					displayGraphics.strokeLine(cornerX, cornerY + critterHeight/2, cornerX + critterWidth/2, cornerY + critterHeight);
-					displayGraphics.strokeLine(cornerX + critterWidth/2, cornerY, cornerX + critterWidth, cornerY + critterHeight/2);
-					displayGraphics.strokeLine(cornerX + critterWidth/2, cornerY + critterHeight, cornerX + critterWidth, cornerY + critterHeight/2);
-					displayGraphics.beginPath();
-					displayGraphics.moveTo(cornerX, cornerY + critterHeight/2);
-					displayGraphics.lineTo(cornerX + critterWidth/2, cornerY);
-					displayGraphics.lineTo(cornerX + critterWidth, cornerY + critterHeight/2);
-					displayGraphics.lineTo(cornerX + critterWidth/2, cornerY + critterHeight);
-					displayGraphics.lineTo(cornerX, cornerY + critterHeight/2);
-					displayGraphics.closePath();
-					displayGraphics.setFill(e.viewFillColor());
-					displayGraphics.fill();
+					Painter.drawDiamond(cornerX, cornerY, critterWidth, critterHeight, c, displayGraphics);
 					break;
 				case TRIANGLE:
-					displayGraphics.strokeLine(cornerX, cornerY+critterHeight, cornerX+(critterWidth/2), cornerY);
-					displayGraphics.strokeLine(cornerX+(critterWidth/2), cornerY, cornerX+critterWidth, cornerY+critterHeight);
-					displayGraphics.strokeLine(cornerX+critterWidth, cornerY+critterHeight, cornerX, cornerY+critterHeight);
-					displayGraphics.beginPath();
-					displayGraphics.moveTo(cornerX, cornerY+critterHeight);
-					displayGraphics.lineTo(cornerX+(critterWidth/2), cornerY);
-					displayGraphics.lineTo(cornerX+critterWidth, cornerY+critterHeight);
-					displayGraphics.lineTo(cornerX, cornerY+critterHeight);
-					displayGraphics.closePath();
-					displayGraphics.setFill(e.viewFillColor());
-					displayGraphics.fill();
+					Painter.drawTriangle(cornerX, cornerY, critterWidth, critterHeight, c, displayGraphics);
 					break;
 				case CIRCLE:
-					displayGraphics.strokeArc(cornerX, cornerY, critterWidth, critterHeight, 0, 360, ArcType.ROUND);
-					displayGraphics.setFill(e.viewFillColor());
-					displayGraphics.fillArc(cornerX, cornerY, critterWidth, critterHeight, 0, 360, ArcType.ROUND);
+					Painter.drawCircle(cornerX, cornerY, critterWidth, critterHeight, c, displayGraphics);
 					break;
 				case STAR:
-					displayGraphics.strokeLine(cornerX+(critterWidth/2), cornerY, cornerX+(3*critterWidth/5), cornerY + (2*critterHeight/5));
-					displayGraphics.strokeLine(cornerX+(3*critterWidth/5), cornerY + (2*critterHeight/5), cornerX+critterWidth, cornerY + (2*critterHeight/5));
-					displayGraphics.strokeLine(cornerX+critterWidth, cornerY + (2*critterHeight/5),cornerX+(7*critterWidth/10), cornerY + (3*critterHeight/5));
-					displayGraphics.strokeLine(cornerX+(7*critterWidth/10), cornerY + (3*critterHeight/5) ,cornerX+(4*critterWidth/5), cornerY + critterHeight);
-					displayGraphics.strokeLine(cornerX+(4*critterWidth/5), cornerY + critterWidth ,cornerX+critterWidth/2, cornerY + (4*critterWidth/5));
-					displayGraphics.strokeLine(cornerX+critterWidth/2, cornerY + (4*critterWidth/5),cornerX+(critterWidth/5), cornerY + critterWidth);
-					displayGraphics.strokeLine(cornerX+(critterWidth/5), cornerY + critterWidth, cornerX+(3*critterWidth/10), cornerY + (3*critterHeight/5));
-					displayGraphics.strokeLine(cornerX+(3*critterWidth/10), cornerY + (3*critterHeight/5), cornerX, cornerY + (2*critterHeight/5));
-					displayGraphics.strokeLine(cornerX, cornerY + (2*critterHeight/5),  cornerX+(2*critterWidth/5), cornerY + (2*critterHeight/5));
-					displayGraphics.strokeLine(cornerX+(2*critterWidth/5), cornerY + (2*critterHeight/5), cornerX+(critterWidth/2), cornerY);
-					displayGraphics.beginPath();
-					displayGraphics.moveTo(cornerX+(critterWidth/2), cornerY);
-					displayGraphics.lineTo(cornerX+(3*critterWidth/5), cornerY + (2*critterHeight/5));
-					displayGraphics.lineTo(cornerX+critterWidth, cornerY + (2*critterHeight/5));
-					displayGraphics.lineTo(cornerX+(7*critterWidth/10), cornerY + (3*critterHeight/5));
-					displayGraphics.lineTo(cornerX+(4*critterWidth/5), cornerY + critterHeight);
-					displayGraphics.lineTo(cornerX+critterWidth/2, cornerY + (4*critterWidth/5));
-					displayGraphics.lineTo(cornerX+(critterWidth/5), cornerY + critterWidth);
-					displayGraphics.lineTo(cornerX+(3*critterWidth/10), cornerY + (3*critterHeight/5));
-					displayGraphics.lineTo( cornerX, cornerY + (2*critterHeight/5));
-					displayGraphics.lineTo(cornerX+(2*critterWidth/5), cornerY + (2*critterHeight/5));
-					displayGraphics.lineTo(cornerX+(critterWidth/2), cornerY);
-					displayGraphics.closePath();
-					displayGraphics.setFill(e.viewFillColor());
-					displayGraphics.fill();
+					Painter.drawStar(cornerX, cornerY, critterWidth, critterHeight, c, displayGraphics);
 					break;
 				default:
 					break;
