@@ -52,7 +52,7 @@ public abstract class Critter {
 	private static Canvas display = null;												//main map canvas created by displayWorld()
 	private static GraphicsContext displayGraphics = null;
 	private static boolean worldFlag = true;										//Checks if proper nodes are created by displayWorld
-	private static String prevDisplay[][] = new String [Params.world_width][Params.world_height];
+	private static String[][] prevDisplay = new String [Params.world_width][Params.world_height];
 	
 	/* NEW FOR PROJECT 5 */
 	public enum CritterShape {
@@ -595,6 +595,12 @@ public abstract class Critter {
 				world.setPrefSize(canvasWidth, canvasHeight);
 				world.setContent(display);
 				Main.root.getChildren().add(world);
+				
+				for(int i = 0; i < Params.world_height; i++){
+					for(int k = 0; k < Params.world_width; k++){
+						prevDisplay[i][k] = "";
+					}
+				}
 
 				worldFlag = false;
 			}
@@ -668,7 +674,11 @@ public abstract class Critter {
 			
 			int cornerX;
 			int cornerY;
+
+
+			
 			for(Critter e: population){
+
 				if(e.toString().equals(prevDisplay[e.x_coord][e.y_coord])){
 					continue;
 				}
@@ -700,7 +710,20 @@ public abstract class Critter {
 					
 				}
 				prevDisplay[e.x_coord][e.y_coord] = e.toString();
+				
 			}
+			for(int i = 0; i < Params.world_width; i++){
+				for(int k = 0; k < Params.world_height; k++){
+					if(worldArray[i][k] <= 0 && !prevDisplay[i][k].equals("")){
+						cornerX = i*(critterWidth+bufferSpace) + bufferSpace;
+						cornerY = k*(critterWidth+bufferSpace) + bufferSpace;
+						displayGraphics.clearRect(cornerX-1, cornerY-1, critterWidth+3, critterHeight+3);
+						prevDisplay[i][k] = "";
+					}
+				}
+			}
+		
+
 		}
 		
 		
