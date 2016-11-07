@@ -545,6 +545,7 @@ public abstract class Critter {
 			for(int i = 0; i < population.size(); i++){
 				if(population.get(i).energy < 1){
 					toRemove[i] = true;
+					worldArray[population.get(i).x_coord][population.get(i).y_coord] -= 1;
 				}
 			}
 			for(int i = population.size()-1; i >= 0; i--){
