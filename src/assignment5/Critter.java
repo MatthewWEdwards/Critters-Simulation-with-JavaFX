@@ -34,8 +34,8 @@ import java.lang.*;
 public abstract class Critter {
 	private static double screenSizeHeight = Screen.getPrimary().getVisualBounds().getHeight();
 	private static double screenSizeWidth = Screen.getPrimary().getVisualBounds().getWidth();
-	private static int critterWidth = 8;	//Represents the size of the critter shape (must be a multiple of 8)
-	private static int critterHeight = 8;//Represents the size of the critter shape (must be a multiple of 8)
+	private static int critterWidth = 64;	//Represents the size of the critter shape (must be a multiple of 8)
+	private static int critterHeight = 64;//Represents the size of the critter shape (must be a multiple of 8)
 	private static int miniWidth = (int) (.2*screenSizeWidth);												//Represents the size of the heat map
 	private static int miniHeight =(int) (.4*screenSizeHeight);											//Represents the size of the heat map
 	private static int displayWidthDim = (critterWidth+8)*Params.world_width + 8;   //Represents the size of the display data

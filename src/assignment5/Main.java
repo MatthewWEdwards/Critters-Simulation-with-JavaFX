@@ -100,14 +100,19 @@ public class Main extends Application {
 		makeCritterBtn.setText("Make Critter");			
 		makeCritterBtn.setOnAction(new EventHandler<ActionEvent>() {
 	    	@Override
-	        public void handle(ActionEvent event) {
+	    	 public void handle(ActionEvent event) {
 	    		try {
-	    			int numToCreate;
+	    			int numToCreate = 1;
 	    			String textBox = numCritters.getText();
-	    			if(!checkIfInt(textBox.trim(), 0)){
-	    				return;
-	    			}else{
-	    				numToCreate = Integer.parseInt(textBox.trim());
+	    			if(!textBox.isEmpty()){
+		    			if(!checkIfInt(textBox.trim(), 0)){
+		    				return;
+		    			}else{
+		    				numToCreate = Integer.parseInt(textBox.trim());
+		    				if(numToCreate == 0){
+		    					numToCreate = 1;
+		    				}
+		    			}
 	    			}
 	    			for(int i = 0; i < numToCreate; i++)
 	    				Critter.makeCritter(selectCritter.getValue());
