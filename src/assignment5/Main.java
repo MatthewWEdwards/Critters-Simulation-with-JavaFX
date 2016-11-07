@@ -135,7 +135,37 @@ public class Main extends Application {
 		});
 
 		
-
+		TextField numTimeSteps = new TextField();
+		root.getChildren().add(numTimeSteps);
+		numTimeSteps.relocate(200, 100);
+		
+		Button timeStepBtn = new Button();
+		timeStepBtn.relocate(250, 200);
+		timeStepBtn.setMinSize(btnWidth, btnHeight);
+		root.getChildren().add(timeStepBtn);
+		timeStepBtn.setText("Do Time Step(s)");			
+		timeStepBtn.setOnAction(new EventHandler<ActionEvent>() {
+	    	@Override
+	        public void handle(ActionEvent event) {
+	    			int numToStep = 1;
+	    			String textBox2 = numTimeSteps.getText();
+	    			if(!textBox2.isEmpty()){
+	    				if(!checkIfInt(textBox2.trim(), 0)){
+	    					return;
+	    				}else{
+	    					numToStep = Integer.parseInt(textBox2.trim());
+	    					if(numToStep == 0){
+	    						numToStep = 1;
+	    					}
+	    				}
+	    			}
+	    		
+	    			for(int i = 0; i < numToStep; i++)
+	    				Critter.worldTimeStep();
+	    			Critter.displayWorld();
+				
+	        }
+		});   
 	
 		
 		
