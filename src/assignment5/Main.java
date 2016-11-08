@@ -1,35 +1,22 @@
 package assignment5;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.Console;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
-
 import javafx.scene.text.Font;
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -40,6 +27,11 @@ public class Main extends Application {
 	
 	public static Pane root = new Pane();
 	public static Text stepCountText = null;
+	public static ObservableList<String> critterSizes = FXCollections.observableArrayList();
+	public static ComboBox<String> selectCritterSize = null;
+	public static int critterWidth = 8;							//Represents the size of the critter shape (must be a multiple of 8)
+	public static int critterHeight = 8;						//Represents the size of the critter shape (must be a multiple of 8)
+	public static boolean worldFlag = true;				//Checks if proper nodes are created by displayWorld
 
 	public static void main(String[] args) {
 		//Launch controller
@@ -85,6 +77,7 @@ public class Main extends Application {
 			root.getChildren().add(selectCritter);
 			selectCritter.setValue("Craig");
 			
+			updateResolutions();
 			
 		Text titleText = new Text(25, 25, "Project 5 Critters 2\nRegan Stehle and Matthew Edwards");
 		titleText.setFont(new Font(25));
@@ -117,7 +110,7 @@ public class Main extends Application {
 	    statsText.relocate(275, 325);
 	    stepText.setFont(new Font(15));
 		root.getChildren().add(statsText);
-		statsText.setWrappingWidth(150);
+		statsText.setWrappingWidth(200);
 		
 		Text makeErrorSeed = new Text(50, 180, "Invalid number");
 		makeErrorSeed.setFont(new Font(15));
@@ -173,6 +166,22 @@ public class Main extends Application {
 				}
 	        }
 		});    
+		
+		Button changeResolution = new Button();
+		changeResolution.relocate(50, 550);
+		changeResolution.setMinSize(btnWidth, btnHeight);
+		root.getChildren().add(changeResolution);
+		changeResolution.setText("Change Critter Size");
+		changeResolution.setOnAction(new EventHandler<ActionEvent>() {
+	    	@Override
+	        public void handle(ActionEvent event) {    
+    			int newRes = Integer.parseInt(selectCritterSize.getValue());
+    			critterWidth = newRes;
+    			critterHeight = newRes;
+    			worldFlag = true;
+    			Critter.displayWorld();
+	    	}
+		});
 		
 		Button quitBtn = new Button();
 		quitBtn.relocate(50, 900);
@@ -270,13 +279,25 @@ public class Main extends Application {
 		
 		Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
 		primaryStage.setScene(new Scene(root, primaryScreenBounds.getWidth(), primaryScreenBounds.getHeight()));
-		primaryStage.show();
-		
-		
-		
+		primaryStage.show();		
 	}
 
+	public static void updateResolutions(){
 
+		int resolution = 8;
+		critterSizes.clear();
+		while((resolution+8)*Params.world_height < 8000 && (resolution+8)*Params.world_width < 8000 && resolution <= 64){
+			critterSizes.add(String.valueOf(resolution));
+			resolution += 8;
+		}
+
+		selectCritterSize = new ComboBox<>(critterSizes);
+		selectCritterSize.setEditable(true);
+		root.getChildren().add(selectCritterSize);
+		selectCritterSize.relocate(275, 550);
+		selectCritterSize.setValue("8");
+	}
+	
 	public static boolean checkIfInt(String input, int index){
 		if(index >= input.length()){
 			return false;
