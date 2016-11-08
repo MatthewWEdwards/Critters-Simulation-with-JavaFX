@@ -20,6 +20,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -35,8 +36,8 @@ import java.lang.reflect.Method;
 public abstract class Critter {
 	private static double screenSizeHeight = Screen.getPrimary().getVisualBounds().getHeight();
 	private static double screenSizeWidth = Screen.getPrimary().getVisualBounds().getWidth();
-	private static int critterWidth = 64;																//Represents the size of the critter shape (must be a multiple of 8)
-	private static int critterHeight = 64;																//Represents the size of the critter shape (must be a multiple of 8)
+	private static int critterWidth = 8;																//Represents the size of the critter shape (must be a multiple of 8)
+	private static int critterHeight = 8;																//Represents the size of the critter shape (must be a multiple of 8)
 	private static int miniWidth = (int) (.2*screenSizeWidth);											//Represents the size of the heat map
 	private static int miniHeight =(int) (.4*screenSizeHeight);											//Represents the size of the heat map
 	private static int displayWidthDim = (critterWidth+8)*Params.world_width + 8;   					//Represents the size of the display data
@@ -501,6 +502,7 @@ public abstract class Critter {
 				//	begWorldArray[r][c] = worldArray[r][c]; //bring begWorldArray up to date
 			
 			timeStep++;
+			Main.stepCountText.setText("Steps since start: " + Integer.toString(timeStep));
 			for(int i = 0; i < population.size(); i++){ //Time Steps
 				Critter current = population.get(i);
 				current.doTimeStep();
@@ -569,11 +571,7 @@ public abstract class Critter {
 		//TODO
 		public static void displayWorld() {
 			if(worldFlag){
-				Canvas miniMap = new Canvas(miniWidth, miniHeight);
-				miniMapGraphics = miniMap.getGraphicsContext2D();
-				Main.root.getChildren().add(miniMap);
-				miniMap.relocate(canvasXPos*2.5, canvasYPos*3);
-				
+
 				display = new Canvas(displayWidthDim, displayHeightDim);
 				displayGraphics = display.getGraphicsContext2D();
 				displayGraphics.setFill(Color.WHITE);
@@ -584,7 +582,26 @@ public abstract class Critter {
 				world.relocate(canvasXPos, canvasYPos);
 				world.setPrefSize(canvasWidth, canvasHeight);
 				world.setContent(display);
+				world.setMaxHeight(canvasHeight);
+				world.setMaxWidth(canvasWidth);
+				world.setMinHeight(0);
+				world.setMinWidth(0);
 				Main.root.getChildren().add(world);
+				
+				Canvas miniMap = new Canvas(miniWidth, miniHeight);
+				miniMapGraphics = miniMap.getGraphicsContext2D();
+				Main.root.getChildren().add(miniMap);
+				miniMap.relocate(canvasXPos*2.5, canvasYPos);
+				miniMap.addEventHandler(MouseEvent.MOUSE_CLICKED,
+					new EventHandler<MouseEvent>() {
+			           @Override
+			           public void handle(MouseEvent e) {
+			        	   world.setHvalue(e.getX()/miniMap.getWidth());
+			               world.setVvalue(e.getY()/miniMap.getHeight());
+			               
+			           }
+			       });
+				
 				
 				for(int i = 0; i < Params.world_height; i++){
 					for(int k = 0; k < Params.world_width; k++){

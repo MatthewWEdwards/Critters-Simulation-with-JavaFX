@@ -39,6 +39,7 @@ import javafx.stage.Screen;
 public class Main extends Application {
 	
 	public static Pane root = new Pane();
+	public static Text stepCountText = null;
 
 	public static void main(String[] args) {
 		//Launch controller
@@ -100,6 +101,10 @@ public class Main extends Application {
 		Text stepText = new Text(50, 395, "Enter number of steps");
 		stepText.setFont(new Font(15));
 		root.getChildren().add(stepText);
+		
+		stepCountText = new Text(50, 500, "Steps since start: 0");
+		stepCountText.setFont(new Font(15));
+		root.getChildren().add(stepCountText);
 		
 		Text seedText = new Text(50, 95, "Enter seed");
 		stepText.setFont(new Font(15));
@@ -210,7 +215,7 @@ public class Main extends Application {
 		});   
 		
 		Button displayBtn = new Button();
-		displayBtn.relocate(275, 100);
+		displayBtn.relocate(275, 135);
 		displayBtn.setMinSize(btnWidth, btnHeight);
 		root.getChildren().add(displayBtn);
 		displayBtn.setText("Display World");
