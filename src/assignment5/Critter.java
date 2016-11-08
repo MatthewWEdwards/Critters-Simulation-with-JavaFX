@@ -30,12 +30,15 @@ import java.lang.reflect.Method;
 public abstract class Critter {
 	private static double screenSizeHeight = Screen.getPrimary().getVisualBounds().getHeight();
 	private static double screenSizeWidth = Screen.getPrimary().getVisualBounds().getWidth();
-		private static int miniWidthMax = (int) (.3*screenSizeWidth);											//Represents the size of the heat map
+	public static boolean worldFlag = true;	
+	private static int critterWidth = 8;																//Represents the size of the critter shape (must be a multiple of 8)
+	private static int critterHeight = 8;								
+	private static int miniWidthMax = (int) (.3*screenSizeWidth);											//Represents the size of the heat map
 	private static int miniHeightMax =(int) (.6*screenSizeHeight);											//Represents the size of the heat map
 	private static int miniWidth = (int) 0;																//Represents the size of the heat map
 	private static int miniHeight =(int) 0;	
-	private static int displayWidthDim = (Main.critterWidth+8)*Params.world_width + 8;   					//Represents the size of the display data
-	private static int displayHeightDim = (Main.critterHeight+8)*Params.world_height + 8;					//Represents the size of the display data
+	private static int displayWidthDim = (critterWidth+8)*Params.world_width + 8;   					//Represents the size of the display data
+	private static int displayHeightDim = (critterHeight+8)*Params.world_height + 8;					//Represents the size of the display data
 	private static int canvasHeight = (int) (.8*screenSizeHeight);										//Represents the size of the canvas display
 	private static int canvasWidth =  (int) (.4*screenSizeWidth);										//Represents the size of the canvas display
 	private static int canvasXPos = (int) (.28*screenSizeWidth);											//Represents the position of the canvas display
@@ -564,10 +567,10 @@ public abstract class Critter {
 		 */
 		//TODO
 		public static void displayWorld() {
-			if(Main.worldFlag){
+			if(worldFlag){
 
-				displayWidthDim = (Main.critterWidth+8)*Params.world_width + 8;
-				displayHeightDim = (Main.critterHeight+8)*Params.world_height + 8;
+				displayWidthDim = (critterWidth+8)*Params.world_width + 8;
+				displayHeightDim = (critterHeight+8)*Params.world_height + 8;
 				display = new Canvas(displayWidthDim, displayHeightDim);
 				displayGraphics = display.getGraphicsContext2D();
 				displayGraphics.setFill(Color.WHITE);
@@ -613,7 +616,7 @@ public abstract class Critter {
 						prevDisplay[i][k] = "";
 					}
 				}
-				Main.worldFlag = false;
+				worldFlag = false;
 			}
 
 			int [] resolution = initializeMiniMap();
@@ -669,20 +672,20 @@ public abstract class Critter {
 		 * @param displayGraphics: The graphics context of the display to be updated
 		 */
 		private static void updateDisplay(GraphicsContext displayGraphics){
-			int partitionWidthX = Main.critterWidth/2 - 4;
-			int partitionWidthY = Main.critterHeight/2 - 4;
+			int partitionWidthX = critterWidth/2 - 4;
+			int partitionWidthY = critterHeight/2 - 4;
 
 			displayGraphics.setLineWidth(2);
 			displayGraphics.setStroke(Color.BLACK);
 			for(int i = 0; i <= Params.world_width*2; i += 2){
 
 				displayGraphics.setFill(Color.BLACK);
-				displayGraphics.strokeLine(i*(Main.critterWidth-partitionWidthX) + 4, 4, i*(Main.critterWidth-partitionWidthX) + 4, Critter.displayHeightDim - 4);
+				displayGraphics.strokeLine(i*(critterWidth-partitionWidthX) + 4, 4, i*(critterWidth-partitionWidthX) + 4, Critter.displayHeightDim - 4);
 			}
 			
 			for(int i = 0; i <= Params.world_width*2; i += 2){
 				displayGraphics.setFill(Color.BLACK);
-				displayGraphics.strokeLine(4, i*(Main.critterHeight-partitionWidthY) + 4, Critter.displayWidthDim - 4, i*(Main.critterHeight-partitionWidthY) + 4);
+				displayGraphics.strokeLine(4, i*(critterHeight-partitionWidthY) + 4, Critter.displayWidthDim - 4, i*(critterHeight-partitionWidthY) + 4);
 			}
 			
 			int cornerX;
@@ -692,9 +695,9 @@ public abstract class Critter {
 				if(e.toString().equals(prevDisplay[e.x_coord][e.y_coord])){
 					continue;
 				}
-				cornerX = e.x_coord*(Main.critterWidth+bufferSpace) + bufferSpace;
-				cornerY = (e.y_coord)*(Main.critterHeight+bufferSpace)+ bufferSpace;
-				Painter.drawRectangle(cornerX-1, cornerY-1, Main.critterWidth+3, Main.critterHeight+3, Color.WHITE, Color.WHITE, displayGraphics);
+				cornerX = e.x_coord*(critterWidth+bufferSpace) + bufferSpace;
+				cornerY = (e.y_coord)*(critterHeight+bufferSpace)+ bufferSpace;
+				Painter.drawRectangle(cornerX-1, cornerY-1, critterWidth+3, critterHeight+3, Color.WHITE, Color.WHITE, displayGraphics);
 				displayGraphics.setLineWidth(2);
 				
 				Color o = e.viewOutlineColor();
@@ -702,19 +705,19 @@ public abstract class Critter {
 
 				switch (e.viewShape()){
 				case SQUARE:
-					Painter.drawRectangle(cornerX, cornerY, Main.critterWidth, Main.critterHeight, o, c, displayGraphics);
+					Painter.drawRectangle(cornerX, cornerY, critterWidth, critterHeight, o, c, displayGraphics);
 					break;
 				case DIAMOND:
-					Painter.drawDiamond(cornerX, cornerY, Main.critterWidth, Main.critterHeight, o, c, displayGraphics);
+					Painter.drawDiamond(cornerX, cornerY, critterWidth, critterHeight, o, c, displayGraphics);
 					break;
 				case TRIANGLE:
-					Painter.drawTriangle(cornerX, cornerY, Main.critterWidth, Main.critterHeight, o, c, displayGraphics);
+					Painter.drawTriangle(cornerX, cornerY, critterWidth, critterHeight, o, c, displayGraphics);
 					break;
 				case CIRCLE:
-					Painter.drawCircle(cornerX, cornerY, Main.critterWidth, Main.critterHeight, o, c, displayGraphics);
+					Painter.drawCircle(cornerX, cornerY, critterWidth, critterHeight, o, c, displayGraphics);
 					break;
 				case STAR:
-					Painter.drawStar(cornerX, cornerY, Main.critterWidth, Main.critterHeight, o, c, displayGraphics);
+					Painter.drawStar(cornerX, cornerY, critterWidth, critterHeight, o, c, displayGraphics);
 					break;
 				default:
 					break;
@@ -726,9 +729,9 @@ public abstract class Critter {
 			for(int i = 0; i < Params.world_width; i++){
 				for(int k = 0; k < Params.world_height; k++){
 					if(worldArray[i][k] <= 0 && !prevDisplay[i][k].equals("")){
-						cornerX = i*(Main.critterWidth+bufferSpace) + bufferSpace;
-						cornerY = k*(Main.critterWidth+bufferSpace) + bufferSpace;
-						Painter.drawRectangle(cornerX-1, cornerY-1, Main.critterWidth+3, Main.critterHeight+3, Color.WHITE, Color.WHITE, displayGraphics);
+						cornerX = i*(critterWidth+bufferSpace) + bufferSpace;
+						cornerY = k*(critterWidth+bufferSpace) + bufferSpace;
+						Painter.drawRectangle(cornerX-1, cornerY-1, critterWidth+3, critterHeight+3, Color.WHITE, Color.WHITE, displayGraphics);
 						prevDisplay[i][k] = "";
 					}
 				}
