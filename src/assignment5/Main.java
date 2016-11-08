@@ -1,9 +1,18 @@
 package assignment5;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.Console;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.List;
+
 import javafx.scene.text.Font;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -95,6 +104,15 @@ public class Main extends Application {
 		Text seedText = new Text(50, 95, "Enter seed");
 		stepText.setFont(new Font(15));
 		root.getChildren().add(seedText);
+		
+	    ByteArrayOutputStream grabStats = new ByteArrayOutputStream();
+		PrintStream statsOut = new PrintStream(grabStats);
+		System.setOut(statsOut);
+	    Text statsText = new Text();
+	    statsText.relocate(275, 325);
+	    stepText.setFont(new Font(15));
+		root.getChildren().add(statsText);
+		statsText.setWrappingWidth(150);
 		
 		Text makeErrorSeed = new Text(50, 180, "Invalid number");
 		makeErrorSeed.setFont(new Font(15));
@@ -224,9 +242,33 @@ public class Main extends Application {
 	        }
 		});    
 		
+		Button statsBtn = new Button();
+		statsBtn.relocate(275, 285);
+		statsBtn.setMinSize(btnWidth, btnHeight);
+		root.getChildren().add(statsBtn);
+		statsBtn.setText("Display Stats");
+		statsBtn.setOnAction(new EventHandler<ActionEvent>() {
+	    	@Override
+	    	 public void handle(ActionEvent event) {
+	    		try {
+					Class<?> critter = Class.forName("assignment5." + selectCritter.getValue());
+					Method statsm = critter.getMethod("runStats", List.class);
+					statsm.invoke(critter, Critter.getInstances(selectCritter.getValue()));
+					statsText.setText("");
+					String nextStatsLine = grabStats.toString();
+					statsText.setText("Stats:\n" + nextStatsLine);
+					grabStats.reset();
+
+				} catch (InvalidCritterException | ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException  e) {}
+	        }
+		});    
+		
 		Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
 		primaryStage.setScene(new Scene(root, primaryScreenBounds.getWidth(), primaryScreenBounds.getHeight()));
 		primaryStage.show();
+		
+		
+		
 	}
 
 
