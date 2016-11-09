@@ -33,7 +33,7 @@ public abstract class Critter {
 	public static boolean worldFlag = true;	
 	private static int critterWidth = 8;																//Represents the size of the critter shape (must be a multiple of 8)
 	private static int critterHeight = 8;								
-	private static int miniWidthMax = (int) (.3*screenSizeWidth);											//Represents the size of the heat map
+	private static int miniWidthMax = (int) (.25*screenSizeWidth);											//Represents the size of the heat map
 	private static int miniHeightMax =(int) (.6*screenSizeHeight);											//Represents the size of the heat map
 	private static int miniWidth = (int) 0;																//Represents the size of the heat map
 	private static int miniHeight =(int) 0;	
@@ -41,8 +41,8 @@ public abstract class Critter {
 	private static int displayHeightDim = (critterHeight+8)*Params.world_height + 8;					//Represents the size of the display data
 	private static int canvasHeight = (int) (.8*screenSizeHeight);										//Represents the size of the canvas display
 	private static int canvasWidth =  (int) (.4*screenSizeWidth);										//Represents the size of the canvas display
-	private static int canvasXPos = (int) (.28*screenSizeWidth);											//Represents the position of the canvas display
-	private static int canvasYPos = (int) (.075*screenSizeHeight);										//Represents the position of the canvas display
+	private static int canvasXPos = (int) (.36*screenSizeWidth);											//Represents the position of the canvas display
+	private static int canvasYPos = (int) (.082*screenSizeHeight);										//Represents the position of the canvas display
 	private static int bufferSpace = 8;																	//Space between critter drawings
 	private static ScrollPane world = null;																//ScrollPane created by displayWorld()
 	private static Canvas miniMap = null;																//minimap canvas created by displayWorld()
@@ -576,7 +576,7 @@ public abstract class Critter {
 				displayGraphics.setFill(Color.WHITE);
 				displayGraphics.fillRect(0, 0, displayWidthDim-1, displayHeightDim-1);
 				
-				Text displayText = new Text(canvasXPos, canvasYPos-10, "World Display");
+				Text displayText = new Text(canvasXPos, canvasYPos- (.015*screenSizeHeight), "World Display");
 				Main.root.getChildren().add(displayText);
 				
 				world = new ScrollPane();
@@ -590,16 +590,26 @@ public abstract class Critter {
 				world.setMinWidth(0);
 				Main.root.getChildren().add(world);
 				
-				Text miniMapText = new Text(.7*Screen.getPrimary().getVisualBounds().getWidth(), 
-						.075*Screen.getPrimary().getVisualBounds().getHeight()-10,
-						"Mini Map. Click on a location to go to that location on the main display.");
+			//	Text miniMapText = new Text((canvasXPos + canvasWidth + .015*screenSizeWidth), 
+				//		canvasYPos - (.015*screenSizeHeight),
+					//	"Mini Map. Click on a location to go to that location on the main display.");
+				Text miniMapText = new Text((canvasXPos + canvasWidth + .015*screenSizeWidth), 
+						canvasYPos - (.015*screenSizeHeight),
+						"Mini Map");
 				Main.root.getChildren().add(miniMapText);
+				Text miniMapDescription = new Text((canvasXPos + canvasWidth + .015*screenSizeWidth),
+						(canvasYPos + .015*screenSizeHeight), 
+						"Click on a location to go to that location on the main display"); 
+				miniMapDescription.setWrappingWidth((.2*screenSizeWidth));
+				Main.root.getChildren().add(miniMapDescription);
+				//miniMapDescription.setWrappingWidth((.2*screenSizeWidth));
+				
 				
 				initializeMiniMap();
 				Canvas miniMap = new Canvas(miniWidth, miniHeight);
 				miniMapGraphics = miniMap.getGraphicsContext2D();
 				Main.root.getChildren().add(miniMap);
-				miniMap.relocate(canvasXPos*2.5, canvasYPos);
+				miniMap.relocate((canvasXPos + canvasWidth + .015*screenSizeWidth), canvasYPos + (.1*screenSizeHeight));
 				miniMap.addEventHandler(MouseEvent.MOUSE_CLICKED,
 					new EventHandler<MouseEvent>() {
 			           @Override
