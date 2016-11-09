@@ -147,13 +147,13 @@ public abstract class Critter {
 		}
 		
 		if(begWorldArray[lookx][looky] == 0)
-			return ""; //not a critter there
+			return null; //not a critter there
 		else {
 			for(Critter e : population){
 				if((e.x_coord == lookx) && (e.y_coord == looky))
 					return e.toString();
 			}
-			return "";
+			return null;
 		}
 		
 		
@@ -494,10 +494,11 @@ public abstract class Critter {
 		 * step to the population array
 		 */ 
 		public static void worldTimeStep() {
-		//	for (int r : worldArray)  //proper way to iterate through a 2d array?
-			//	for ( int c : worldArray[r])
-				//	begWorldArray[r][c] = worldArray[r][c]; //bring begWorldArray up to date
-			
+			for (int r = 0; r < Params.world_width; r++){
+				for ( int c = 0; c < Params.world_height; c++){
+					begWorldArray[r][c] = worldArray[r][c]; 
+				}
+			}
 			timeStep++;
 			Main.stepCountText.setText("Steps since start: " + Integer.toString(timeStep));
 			for(int i = 0; i < population.size(); i++){ //Time Steps
