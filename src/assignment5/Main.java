@@ -191,6 +191,7 @@ public class Main extends Application {
 	    			for(int i = 0; i < numToCreate; i++)
 	    				Critter.makeCritter(selectCritter.getValue());
 	    			Critter.displayWorld();
+	    			updateStats(selectCritter, statsText, grabStats);
 				} catch (InvalidCritterException e) {
 				}
 	        }
@@ -233,6 +234,7 @@ public class Main extends Application {
 	    			for(int i = 0; i < numToStep; i++)
 	    				Critter.worldTimeStep();
 	    			Critter.displayWorld();
+	    			updateStats(selectCritter, statsText, grabStats);
 	        }
 		});   
 		
@@ -289,6 +291,7 @@ public class Main extends Application {
 	    	@Override
 	        public void handle(ActionEvent event) {
 	    		Critter.displayWorld();
+	    		updateStats(selectCritter, statsText, grabStats);
 	        }
 		});    
 		
@@ -321,17 +324,8 @@ public class Main extends Application {
 		statsBtn.setOnAction(new EventHandler<ActionEvent>() {
 	    	@Override
 	    	 public void handle(ActionEvent event) {
-	    		try {
-					Class<?> critter = Class.forName("assignment5." + selectCritter.getValue());
-					Method statsm = critter.getMethod("runStats", List.class);
-					statsm.invoke(critter, Critter.getInstances(selectCritter.getValue()));
-					statsText.setText("");
-					String nextStatsLine = grabStats.toString();
-					statsText.setText("Stats:\n" + nextStatsLine);
-					grabStats.reset();
-
-				} catch (InvalidCritterException | ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException  e) {}
-	        }
+	    		updateStats(selectCritter, statsText, grabStats);
+	    	}
 		});    
 		
 
@@ -382,6 +376,22 @@ public class Main extends Application {
 			return true;
 	}
 	
+	public static void updateStats(ComboBox<String> selectCritter, Text statsText, ByteArrayOutputStream grabStats){
+		
+		try{
+			Class<?> critter = Class.forName("assignment5." + selectCritter.getValue());
+			Method statsm = critter.getMethod("runStats", List.class);
+			statsm.invoke(critter, Critter.getInstances(selectCritter.getValue()));
+			statsText.setText("");
+			String nextStatsLine = grabStats.toString();
+			statsText.setText("Stats:\n" + nextStatsLine);
+			grabStats.reset();
+		}catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException |
+				InvalidCritterException | ClassNotFoundException |NoSuchMethodException | 
+				SecurityException e) {
+			return;
+		}
+	}
 	
     
 }
