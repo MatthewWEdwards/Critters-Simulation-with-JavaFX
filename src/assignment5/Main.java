@@ -42,11 +42,20 @@ import javafx.stage.Screen;
 
 public class Main extends Application {
 	
+	
+	public static int critterWidth = 8;																//Represents the size of the critter shape (must be a multiple of 8)
+	public static int critterHeight = 8;	
+	public static boolean worldFlag = true;	
+	public static boolean updateFlag = false;	
 	public static Pane root = new Pane();
 	public static Text stepCountText = null;
 	public static boolean go = false;
+	public static ObservableList<String> critterSizes = FXCollections.observableArrayList();
+	public static ComboBox<String> selectCritterSize = null;
 	Timer timer = new Timer();
 	public static int animationFrame = 1;
+	public static double screenSizeHeight = Screen.getPrimary().getVisualBounds().getHeight();
+	public static double screenSizeWidth = Screen.getPrimary().getVisualBounds().getWidth();
 
 	public static void main(String[] args) {
 		//Launch controller
@@ -60,8 +69,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 	
-		double screenSizeHeight = Screen.getPrimary().getVisualBounds().getHeight();
-		double screenSizeWidth = Screen.getPrimary().getVisualBounds().getWidth();
+		
 		int btnHeight = (int) (.05*screenSizeHeight); //30
 		int btnWidth = (int) (.1*screenSizeWidth);//150;
 		
@@ -94,7 +102,7 @@ public class Main extends Application {
 			root.getChildren().add(selectCritter);
 			selectCritter.setValue("Craig");
 			
-			
+		updateResolutions();
 		Text titleText = new Text((.02*screenSizeWidth), (.04*screenSizeHeight), "Project 5 Critters 2\nRegan Stehle and Matthew Edwards");//25, 25
 		titleText.setFont(new Font(25));
 		root.getChildren().add(titleText);
@@ -198,7 +206,7 @@ public class Main extends Application {
 		});    
 		
 		Button quitBtn = new Button();
-		quitBtn.relocate((.02*screenSizeWidth), (.8*screenSizeHeight)); //50, 900
+		quitBtn.relocate((.02*screenSizeWidth), (.9*screenSizeHeight)); //50, 900
 		quitBtn.setMinSize(btnWidth, btnHeight);
 		root.getChildren().add(quitBtn);
 		quitBtn.setText("Quit");			
@@ -209,6 +217,24 @@ public class Main extends Application {
 	    	}
 		});
 
+		Button changeResolution = new Button();
+	 		changeResolution.relocate(.02*screenSizeWidth, .8*screenSizeHeight);
+	 		changeResolution.setMinSize(btnWidth, btnHeight);
+	 		root.getChildren().add(changeResolution);
+	 		changeResolution.setText("Change Critter Size");
+	 		changeResolution.setOnAction(new EventHandler<ActionEvent>() {
+	 	    	@Override
+	 	        public void handle(ActionEvent event) {    
+	     			int newRes = Integer.parseInt(selectCritterSize.getValue());
+	     			critterWidth = newRes;
+	     			critterHeight = newRes;
+	     			updateFlag = true;
+	     			updateResolutions();
+	     			Critter.displayWorld();
+	     			
+	 	    	}
+	 		});
+		
 		Button timeStepBtn = new Button();
 		timeStepBtn.relocate((.02*screenSizeWidth), (.58*screenSizeHeight)); //50, 435
 		timeStepBtn.setMinSize(btnWidth, btnHeight);
@@ -393,5 +419,19 @@ public class Main extends Application {
 		}
 	}
 	
-    
+	public static void updateResolutions(){
+		 
+	 	int resolution = 8;
+	 	critterSizes.clear();
+	 	while((resolution+8)*Params.world_height < 8000 && (resolution+8)*Params.world_width < 8000 && resolution <= 64){
+	 			critterSizes.add(String.valueOf(resolution));
+	 			resolution += 8;
+	 		}
+	  
+	 		selectCritterSize = new ComboBox<>(critterSizes);
+	 		selectCritterSize.setEditable(true);
+	 		root.getChildren().add(selectCritterSize);
+	 		selectCritterSize.relocate(.02*screenSizeWidth, .75*screenSizeHeight);
+	 		selectCritterSize.setValue("8");
+	 	}
 }
