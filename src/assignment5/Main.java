@@ -23,6 +23,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Screen;
+import javafx.animation.AnimationTimer;
 
 public class Main extends Application {
 
@@ -280,11 +281,10 @@ public class Main extends Application {
 						}
 					}
 				}
+				animationFrame = numToStep;
 				go = true;
-				// animationFrame = numToStep;
-
-				doAnimation(numToStep, primaryStage);
-
+				 AnimationTimer timer = new MyTimer();
+			        timer.start();
 			}
 		});
 
@@ -357,23 +357,7 @@ public class Main extends Application {
 
 	}
 
-	public static void doAnimation(int numToStep, Stage primaryStage) {
-
-		do {
-			for (int i = 0; i < numToStep; i++)
-				Critter.worldTimeStep();
-			Critter.displayWorld();
-
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				go = false;
-			}
-
-		} while (go);
-
-	}
-
+	
 	public static boolean checkIfInt(String input, int index) {
 		if (index >= input.length()) {
 			return false;
@@ -421,4 +405,28 @@ public class Main extends Application {
 		selectCritterSize.relocate(.02 * screenSizeWidth, .75 * screenSizeHeight);
 		selectCritterSize.setValue("8");
 	}
+	
+	private class MyTimer extends AnimationTimer {
+		int numToStep = animationFrame;
+        @Override
+        public void handle(long now) {
+        
+            doHandle();
+        }
+
+        private void doHandle() {
+        	if (go == false)
+        		stop();
+        	for (int i = 0; i < numToStep; i++)
+				Critter.worldTimeStep();
+			Critter.displayWorld();
+
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				
+			}
+           
+        }
+    }
 }
