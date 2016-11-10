@@ -34,7 +34,7 @@ public abstract class Critter {
 	//Represents the size of the canvas display
 	private static int canvasWidth =  (int) (.4*screenSizeWidth);										
 	//Represents the position of the canvas display
-	private static int canvasXPos = (int) (.36*screenSizeWidth);										
+	private static int canvasXPos = (int) (.30*screenSizeWidth);										
 	//Represents the position of the canvas display
 	private static int canvasYPos = (int) (.082*screenSizeHeight);										
 	//Space between critter drawings
@@ -651,7 +651,6 @@ public abstract class Critter {
 				world.setMinHeight(0);
 				world.setMinWidth(0);
 				Main.root.getChildren().add(world);
-				Main.updateFlag = false;
 			}
 
 			int [] resolution = initializeMiniMap();
@@ -727,7 +726,7 @@ public abstract class Critter {
 			int cornerY;
 			for(Critter e: population){
 
-				if(e.toString().equals(prevDisplay[e.x_coord][e.y_coord])){
+				if(e.toString().equals(prevDisplay[e.x_coord][e.y_coord]) && !Main.updateFlag){
 					continue;
 				}
 				cornerX = e.x_coord*(Main.critterWidth+bufferSpace) + bufferSpace;
@@ -761,6 +760,7 @@ public abstract class Critter {
 				prevDisplay[e.x_coord][e.y_coord] = e.toString();
 				
 			}
+			Main.updateFlag = false;
 			for(int i = 0; i < Params.world_width; i++){
 				for(int k = 0; k < Params.world_height; k++){
 					if(worldArray[i][k] <= 0 && !prevDisplay[i][k].equals("")){

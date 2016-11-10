@@ -146,6 +146,9 @@ public class Main extends Application {
 																													// 480
 		makeErrorAnimation.setFont(new Font(15));
 		makeErrorAnimation.setFill(Color.RED);
+		
+		Text resolutionText = new Text((.02 * screenSizeWidth), (.74 * screenSizeHeight), "Select Critter Resolution");
+		root.getChildren().add(resolutionText);
 
 		TextField numCritters = new TextField();
 		root.getChildren().add(numCritters);
@@ -225,6 +228,7 @@ public class Main extends Application {
 				critterHeight = newRes;
 				updateFlag = true;
 				updateResolutions();
+				Critter.displayWorld();
 			}
 		});
 
@@ -289,7 +293,7 @@ public class Main extends Application {
 		});
 
 		Button stopAnimationBtn = new Button();
-		stopAnimationBtn.relocate((.17 * screenSizeWidth), (.8 * screenSizeHeight)); // 50,
+		stopAnimationBtn.relocate((.17 * screenSizeWidth), (.75 * screenSizeHeight)); // 50,
 																						// 900
 		stopAnimationBtn.setMinSize(btnWidth, btnHeight);
 		root.getChildren().add(stopAnimationBtn);
