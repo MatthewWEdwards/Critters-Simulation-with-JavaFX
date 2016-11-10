@@ -6,47 +6,46 @@ import java.util.*;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.image.PixelReader;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.ArcType;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import javafx.stage.Screen;
-
-import java.lang.*;
-import java.lang.reflect.Method;
 
 
 public abstract class Critter {
 	private static double screenSizeHeight = Screen.getPrimary().getVisualBounds().getHeight();
 	private static double screenSizeWidth = Screen.getPrimary().getVisualBounds().getWidth();
 
-	
-	private static int miniWidthMax = (int) (.25*screenSizeWidth);										//Represents the size of the heat map
-	private static int miniHeightMax =(int) (.6*screenSizeHeight);										//Represents the size of the heat map
-	private static int miniWidth = (int) 0;																//Represents the size of the heat map
+	//Represents the size of the heat map
+	private static int miniWidthMax = (int) (.25*screenSizeWidth);
+	//Represents the size of the heat map
+	private static int miniHeightMax =(int) (.6*screenSizeHeight);										
+	//Represents the size of the heat map
+	private static int miniWidth = (int) 0;																
+	//Represents the size of the heat map
 	private static int miniHeight =(int) 0;	
-	private static int displayWidthDim = (Main.critterWidth+8)*Params.world_width + 8;   					//Represents the size of the display data
-	private static int displayHeightDim = (Main.critterHeight+8)*Params.world_height + 8;					//Represents the size of the display data
-	private static int canvasHeight = (int) (.8*screenSizeHeight);										//Represents the size of the canvas display
-	private static int canvasWidth =  (int) (.4*screenSizeWidth);										//Represents the size of the canvas display
-	private static int canvasXPos = (int) (.36*screenSizeWidth);										//Represents the position of the canvas display
-	private static int canvasYPos = (int) (.082*screenSizeHeight);										//Represents the position of the canvas display
-	private static int bufferSpace = 8;																	//Space between critter drawings
-	private static ScrollPane world = null;																//ScrollPane created by displayWorld()
-	private static Canvas miniMap = null;																//minimap canvas created by displayWorld()
+	//Represents the size of the display data
+	private static int displayWidthDim = (Main.critterWidth+8)*Params.world_width + 8;   					
+	//Represents the size of the display data
+	private static int displayHeightDim = (Main.critterHeight+8)*Params.world_height + 8;					
+	//Represents the size of the canvas display
+	private static int canvasHeight = (int) (.8*screenSizeHeight);										
+	//Represents the size of the canvas display
+	private static int canvasWidth =  (int) (.4*screenSizeWidth);										
+	//Represents the position of the canvas display
+	private static int canvasXPos = (int) (.36*screenSizeWidth);										
+	//Represents the position of the canvas display
+	private static int canvasYPos = (int) (.082*screenSizeHeight);										
+	//Space between critter drawings
+	private static int bufferSpace = 8;																	
+	//ScrollPane created by displayWorld()
+	private static ScrollPane world = null;																
+	//minimap canvas created by displayWorld()
+	private static Canvas miniMap = null;																
 	private static GraphicsContext miniMapGraphics = null;		
-	private static Canvas display = null;																//main map canvas created by displayWorld()
+	//main map canvas created by displayWorld()
+	private static Canvas display = null;																
 	private static GraphicsContext displayGraphics = null;
 	
 	private static String[][] prevDisplay = new String [Params.world_width][Params.world_height];
@@ -63,16 +62,16 @@ public abstract class Critter {
 		STAR
 	}
 	
-	/* the default color is white, which I hope makes critters invisible by default
-	 * If you change the background color of your View component, then update the default
-	 * color to be the same as you background 
-	 * 
-	 * critters must override at least one of the following three methods, it is not 
-	 * proper for critters to remain invisible in the view
-	 * 
-	 * If a critter only overrides the outline color, then it will look like a non-filled 
-	 * shape, at least, that's the intent. You can edit these default methods however you 
-	 * need to, but please preserve that intent as you implement them. 
+	/*
+	 * the default color is white, which I hope makes critters invisible by
+	 * default If you change the background color of your View component, then
+	 * update the default color to be the same as you background
+	 * critters must override at least one of the following three methods, it is
+	 * not proper for critters to remain invisible in the view
+	 * If a critter only overrides the outline color, then it will look like a
+	 * non-filled shape, at least, that's the intent. You can edit these default
+	 * methods however you need to, but please preserve that intent as you
+	 * implement them.
 	 */
 	public javafx.scene.paint.Color viewColor() { 
 		return javafx.scene.paint.Color.WHITE; 
@@ -82,7 +81,8 @@ public abstract class Critter {
 	public javafx.scene.paint.Color viewFillColor() { return viewColor(); }
 	public abstract CritterShape viewShape(); 
 
-	// Gets the package name.  This assumes that Critter and its subclasses are all in the same package.
+	// Gets the package name. This assumes that Critter and its subclasses are
+	// all in the same package.
 	static {
 		myPackage = Critter.class.getPackage().toString().split(" ")[1];
 	}
@@ -161,10 +161,11 @@ public abstract class Critter {
 	/* rest is unchanged from Project 4 */
 	private static List<String> typesOfCritters = new java.util.ArrayList<String>();
 	private static int timeStep = 0;
-	private static int[][] begWorldArray = new int[Params.world_width][Params.world_height]; //need to be instantiated in main?
+	private static int[][] begWorldArray = new int[Params.world_width][Params.world_height];
 	private static int[][] worldArray = new int[Params.world_width][Params.world_height];
 	
-	// Gets the package name.  This assumes that Critter and its subclasses are all in the same package.
+	// Gets the package name. This assumes that Critter and its subclasses are
+	// all in the same package.
 		static {
 			myPackage = Critter.class.getPackage().toString().split(" ")[1];
 		}
@@ -179,23 +180,26 @@ public abstract class Critter {
 		}
 		
 		
-		/* a one-character long string that visually depicts your critter in the ASCII interface */
+	/*
+	 * a one-character long string that visually depicts your critter in the
+	 * ASCII interface
+	 */
 		public String toString() { return ""; }
-		
 		private int energy = 0;
-		
 		protected int getEnergy() { return energy; }
-		
 		private int x_coord;
 		private int y_coord;
 		private boolean movedThisStep; 
 		private boolean inFight;
 		
 		
-		/**
-		 * This function allows the critter to move one space in a given direction if it meets certain criteria
-		 * @param direction indicates which direction the Critter wishes to walk
-		 */
+	/**
+	 * This function allows the critter to move one space in a given direction
+	 * if it meets certain criteria
+	 * 
+	 * @param direction
+	 *            indicates which direction the Critter wishes to walk
+	 */
 		protected final void walk(int direction) {
 			energy -= Params.walk_energy_cost;
 			if(movedThisStep == true)
