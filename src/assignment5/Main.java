@@ -145,7 +145,7 @@ public class Main extends Application {
 		makeErrorStep.setFont(new Font(15));
 		makeErrorStep.setFill(Color.RED);
 
-		Text makeErrorAnimation = new Text((.17 * screenSizeWidth), (.76 * screenSizeHeight), "Invalid number"); // 50,
+		Text makeErrorAnimation = new Text((.17 * screenSizeWidth), (.675 * screenSizeHeight), "Invalid number"); // 50,
 																													// 480
 		makeErrorAnimation.setFont(new Font(15));
 		makeErrorAnimation.setFill(Color.RED);
