@@ -265,51 +265,6 @@ public class Main extends Application {
 			}
 		});
 
-		Button startAnimationBtn = new Button();
-		startAnimationBtn.relocate((.17 * screenSizeWidth), (.68 * screenSizeHeight)); // 50,
-																						// 435
-		startAnimationBtn.setMinSize(btnWidth, btnHeight);
-		root.getChildren().add(startAnimationBtn);
-		startAnimationBtn.setText("Start Animation");
-		startAnimationBtn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				int numToStep = 1;
-				String textBox2 = animationField.getText();
-				if (!textBox2.isEmpty()) {
-					if (!checkIfInt(textBox2.trim(), 0)) {
-						root.getChildren().add(makeErrorAnimation);
-						return;
-					} else {
-						root.getChildren().remove(makeErrorAnimation);
-						numToStep = Integer.parseInt(textBox2.trim());
-						if (numToStep == 0) {
-							numToStep = 1;
-						}
-					}
-				}
-				mySelectCritter = selectCritter;
-				myStatsText = statsText; 
-				myGrabStats = grabStats;
-				animationFrame = numToStep;
-				go = true;
-				 AnimationTimer timer = new MyTimer();
-			        timer.start();
-			}
-		});
-
-		Button stopAnimationBtn = new Button();
-		stopAnimationBtn.relocate((.17 * screenSizeWidth), (.75 * screenSizeHeight)); // 50,
-																						// 900
-		stopAnimationBtn.setMinSize(btnWidth, btnHeight);
-		root.getChildren().add(stopAnimationBtn);
-		stopAnimationBtn.setText("Stop Animation");
-		stopAnimationBtn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				go = false;
-			}
-		});
 
 		Button displayBtn = new Button();
 		displayBtn.relocate((.17 * screenSizeWidth), (.19 * screenSizeHeight)); // 275,
@@ -361,6 +316,68 @@ public class Main extends Application {
 			}
 		});
 
+		Button startAnimationBtn = new Button();
+		startAnimationBtn.relocate((.17 * screenSizeWidth), (.68 * screenSizeHeight)); // 50,
+																						// 435
+		startAnimationBtn.setMinSize(btnWidth, btnHeight);
+		root.getChildren().add(startAnimationBtn);
+		startAnimationBtn.setText("Start Animation");
+		startAnimationBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				int numToStep = 1;
+				String textBox2 = animationField.getText();
+				if (!textBox2.isEmpty()) {
+					if (!checkIfInt(textBox2.trim(), 0)) {
+						root.getChildren().add(makeErrorAnimation);
+						return;
+					} else {
+						root.getChildren().remove(makeErrorAnimation);
+						numToStep = Integer.parseInt(textBox2.trim());
+						if (numToStep == 0) {
+							numToStep = 1;
+						}
+					}
+				}
+				makeCritterBtn.setDisable(true);
+				quitBtn.setDisable(true);
+				timeStepBtn.setDisable(true);
+				displayBtn.setDisable(true);
+				changeResolution.setDisable(true);
+				seedBtn.setDisable(true);
+				statsBtn.setDisable(true);
+				startAnimationBtn.setDisable(true);
+				mySelectCritter = selectCritter;
+				myStatsText = statsText; 
+				myGrabStats = grabStats;
+				animationFrame = numToStep;
+				go = true;
+				 AnimationTimer timer = new MyTimer();
+			        timer.start();
+			}
+		});
+
+		Button stopAnimationBtn = new Button();
+		stopAnimationBtn.relocate((.17 * screenSizeWidth), (.75 * screenSizeHeight)); // 50,
+																						// 900
+		stopAnimationBtn.setMinSize(btnWidth, btnHeight);
+		root.getChildren().add(stopAnimationBtn);
+		stopAnimationBtn.setText("Stop Animation");
+		stopAnimationBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				makeCritterBtn.setDisable(false);
+				quitBtn.setDisable(false);
+				timeStepBtn.setDisable(false);
+				displayBtn.setDisable(false);
+				changeResolution.setDisable(false);
+				seedBtn.setDisable(false);
+				statsBtn.setDisable(false);
+				startAnimationBtn.setDisable(false);
+				go = false;
+			}
+		});
+		
 		Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
 		primaryStage.setScene(new Scene(root, primaryScreenBounds.getWidth(), primaryScreenBounds.getHeight()));
 		primaryStage.show();
@@ -439,7 +456,7 @@ public class Main extends Application {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				
+				go = false;
 			}
            
         }
