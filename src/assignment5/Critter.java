@@ -634,17 +634,29 @@ public abstract class Critter {
 			}
 			
 			if(Main.updateFlag){
+				Main.root.getChildren().remove(world);
+				displayWidthDim = (Main.critterWidth+8)*Params.world_width + 8;
+				displayHeightDim = (Main.critterHeight+8)*Params.world_height + 8;
 				display = new Canvas(displayWidthDim, displayHeightDim);
 				displayGraphics = display.getGraphicsContext2D();
 				displayGraphics.setFill(Color.WHITE);
 				displayGraphics.fillRect(0, 0, displayWidthDim-1, displayHeightDim-1);
+				world = new ScrollPane();
+				world.setPannable(true);
+				world.relocate(canvasXPos, canvasYPos);
+				world.setPrefSize(canvasWidth, canvasHeight);
 				world.setContent(display);
+				world.setMaxHeight(canvasHeight);
+				world.setMaxWidth(canvasWidth);
+				world.setMinHeight(0);
+				world.setMinWidth(0);
+				Main.root.getChildren().add(world);
 				Main.updateFlag = false;
 			}
 
 			int [] resolution = initializeMiniMap();
 			updateMiniMap(resolution, miniMapGraphics);
-			updateDisplay(displayGraphics);
+			updateDisplay(display.getGraphicsContext2D());
 		}
 		
 		/**

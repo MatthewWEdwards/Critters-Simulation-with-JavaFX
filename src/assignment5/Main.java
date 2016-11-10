@@ -224,8 +224,6 @@ public class Main extends Application {
 				critterHeight = newRes;
 				updateFlag = true;
 				updateResolutions();
-				Critter.displayWorld();
-
 			}
 		});
 
