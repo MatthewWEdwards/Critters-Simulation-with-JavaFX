@@ -316,12 +316,6 @@ public class Main extends Application {
 			}
 		});
 
-		Button startAnimationBtn = new Button();
-		startAnimationBtn.relocate((.17 * screenSizeWidth), (.68 * screenSizeHeight)); // 50,
-																						// 435
-		startAnimationBtn.setMinSize(btnWidth, btnHeight);
-		root.getChildren().add(startAnimationBtn);
-		startAnimationBtn.setText("Start Animation");
 		startAnimationBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -347,6 +341,12 @@ public class Main extends Application {
 				seedBtn.setDisable(true);
 				statsBtn.setDisable(true);
 				startAnimationBtn.setDisable(true);
+				selectCritter.setDisable(true);
+				numCritters.setDisable(true); 
+				numTimeSteps.setDisable(true); 
+				seedField.setDisable(true);  
+				animationField.setDisable(true);
+				selectCritterSize.setDisable(true);
 				mySelectCritter = selectCritter;
 				myStatsText = statsText; 
 				myGrabStats = grabStats;
@@ -358,7 +358,7 @@ public class Main extends Application {
 		});
 
 		Button stopAnimationBtn = new Button();
-		stopAnimationBtn.relocate((.17 * screenSizeWidth), (.75 * screenSizeHeight)); // 50,
+		stopAnimationBtn.relocate((.17 * screenSizeWidth), (.77 * screenSizeHeight)); // 50,
 																						// 900
 		stopAnimationBtn.setMinSize(btnWidth, btnHeight);
 		root.getChildren().add(stopAnimationBtn);
@@ -374,6 +374,12 @@ public class Main extends Application {
 				seedBtn.setDisable(false);
 				statsBtn.setDisable(false);
 				startAnimationBtn.setDisable(false);
+				selectCritter.setDisable(false);
+				numCritters.setDisable(false); 
+				numTimeSteps.setDisable(false);
+				seedField.setDisable(false);  
+				animationField.setDisable(false);
+				selectCritterSize.setDisable(false);
 				go = false;
 			}
 		});
