@@ -41,7 +41,10 @@ public class Main extends Application {
 	public static int animationFrame = 1;
 	public static double screenSizeHeight = Screen.getPrimary().getVisualBounds().getHeight();
 	public static double screenSizeWidth = Screen.getPrimary().getVisualBounds().getWidth();
-
+	public static ComboBox<String> mySelectCritter;
+	public static Text myStatsText; 
+	public static ByteArrayOutputStream myGrabStats;
+	
 	public static void main(String[] args) {
 		launch();
 	}
@@ -285,6 +288,9 @@ public class Main extends Application {
 						}
 					}
 				}
+				mySelectCritter = selectCritter;
+				myStatsText = statsText; 
+				myGrabStats = grabStats;
 				animationFrame = numToStep;
 				go = true;
 				 AnimationTimer timer = new MyTimer();
@@ -412,7 +418,11 @@ public class Main extends Application {
 	
 	private class MyTimer extends AnimationTimer {
 		int numToStep = animationFrame;
-        @Override
+		ComboBox<String> selectCritter = mySelectCritter;
+		Text statsText = myStatsText; 
+		ByteArrayOutputStream grabStats = myGrabStats;
+		
+		@Override
         public void handle(long now) {
         
             doHandle();
@@ -424,6 +434,7 @@ public class Main extends Application {
         	for (int i = 0; i < numToStep; i++)
 				Critter.worldTimeStep();
 			Critter.displayWorld();
+			updateStats(selectCritter, statsText, grabStats);
 
 			try {
 				Thread.sleep(1000);
